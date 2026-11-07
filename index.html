@@ -5,87 +5,474 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#100b0b">
 <title>Predator Torrent</title>
+
 <style>
 *{box-sizing:border-box}
-:root{--bg:#100d0c;--panel:#201c1a;--panel2:#292421;--line:#493a31;--red:#c51c2e;--orange:#f08a32;--text:#eee9e5;--muted:#aaa19a}
-body{margin:0;background:radial-gradient(circle at top,#30231c 0,#100d0c 55%);color:var(--text);font:15px Arial,sans-serif}
-header{position:sticky;top:0;z-index:5;background:#17110f;border-bottom:2px solid var(--red);padding:13px 4%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.logo{font-size:23px;font-weight:800;color:#ff5365;letter-spacing:.5px}
+:root{
+--bg:#100d0c;
+--panel:#201c1a;
+--line:#493a31;
+--red:#c51c2e;
+--orange:#f08a32;
+--text:#eee9e5;
+--muted:#aaa19a
+}
+body{
+margin:0;
+background:radial-gradient(circle at top,#30231c 0,#100d0c 55%);
+color:var(--text);
+font:15px Arial,sans-serif
+}
+header{
+position:sticky;
+top:0;
+z-index:5;
+background:#17110f;
+border-bottom:2px solid var(--red);
+padding:13px 4%;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+flex-wrap:wrap
+}
+.logo{
+font-size:23px;
+font-weight:800;
+color:#ff5365
+}
 nav{display:flex;gap:7px;flex-wrap:wrap}
-button{border:1px solid #77303a;background:#9e1426;color:white;padding:10px 14px;border-radius:6px;cursor:pointer;font-weight:bold}
+button{
+border:1px solid #77303a;
+background:#9e1426;
+color:white;
+padding:10px 14px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold
+}
 button:hover{background:#c51c2e}
-main{max-width:1450px;margin:18px auto;padding:0 16px}
-.layout{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(260px,.95fr);gap:16px;align-items:start}
-.panel{background:linear-gradient(135deg,#282321,#1b1817);border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:16px;box-shadow:0 5px 18px #0005}
-.panel-title{padding:11px 15px;background:repeating-linear-gradient(135deg,#302925,#302925 8px,#292320 8px,#292320 16px);border-bottom:1px solid var(--line);font-weight:bold;color:#e6dcd5}
+main{
+max-width:1450px;
+margin:18px auto;
+padding:0 16px
+}
+.layout{
+display:grid;
+grid-template-columns:minmax(0,2.1fr) minmax(260px,.95fr);
+gap:16px;
+align-items:start
+}
+.panel{
+background:linear-gradient(135deg,#282321,#1b1817);
+border:1px solid var(--line);
+border-radius:9px;
+overflow:hidden;
+margin-bottom:16px;
+box-shadow:0 5px 18px #0005
+}
+.panel-title{
+padding:11px 15px;
+background:repeating-linear-gradient(135deg,#302925,#302925 8px,#292320 8px,#292320 16px);
+border-bottom:1px solid var(--line);
+font-weight:bold
+}
 .panel-body{padding:15px}
-.chat-frame{display:block;width:100%;height:620px;border:0;background:#111}
-.stats{display:grid;grid-template-columns:1fr auto;gap:11px 10px}
-.stats strong{color:var(--orange);text-align:right}
-input,select{width:100%;padding:12px;margin:7px 0;background:#151211;color:white;border:1px solid #60443b;border-radius:6px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.card{padding:16px;border:1px solid var(--line);border-radius:8px;background:#1a1716}
-.card h3{color:#ff6473;margin:0 0 8px}
-.small{font-size:13px;color:var(--muted)}
+.chat-frame{
+display:block;
+width:100%;
+height:560px;
+border:0;
+background:#111
+}
+.stats{
+display:grid;
+grid-template-columns:1fr auto;
+gap:11px 10px
+}
+.stats strong{
+color:var(--orange);
+text-align:right
+}
+input{
+width:100%;
+padding:12px;
+margin:7px 0;
+background:#151211;
+color:white;
+border:1px solid #60443b;
+border-radius:6px
+}
+.films{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:13px
+}
+.film{
+background:#171413;
+border:1px solid #4b3730;
+border-radius:8px;
+padding:14px
+}
+.film h3{
+margin:0 0 8px;
+color:#ff8794
+}
+.film p{
+color:#c5bbb4;
+line-height:1.45;
+font-size:14px
+}
+.film button{margin-top:5px}
+.small{
+font-size:12px;
+color:var(--muted);
+line-height:1.45
+}
+.player{
+width:100%;
+background:#000;
+max-height:70vh
+}
 .hidden{display:none!important}
-footer{text-align:center;color:var(--muted);padding:24px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.chat-frame{height:68vh;min-height:440px}header{position:static}}
+footer{
+text-align:center;
+color:var(--muted);
+padding:24px
+}
+@media(max-width:850px){
+.layout{grid-template-columns:1fr}
+header{position:static}
+.chat-frame{
+height:65vh;
+min-height:400px
+}
+}
 </style>
 </head>
+
 <body>
+
 <header>
-  <div class="logo">🐺 PREDATOR TORRENT</div>
-  <nav>
-    <button onclick="showPage('home')">Főoldal</button>
-    <button onclick="showPage('browse')">Torrentek</button>
-    <button onclick="showPage('upload')">Feltöltés</button>
-    <button onclick="showPage('community')">Közösség / Chat</button>
-  </nav>
+<div class="logo">🐺 PREDATOR TORRENT</div>
+
+<nav>
+<button onclick="showPage('home')">Főoldal</button>
+<button onclick="showPage('films')">Filmek</button>
+<button onclick="showPage('community')">Chat</button>
+</nav>
 </header>
+
 <main>
+
 <section id="home">
-  <div class="panel"><div class="panel-title">Üdvözlünk a Predator Torrent közösségben!</div>
-  <div class="panel-body"><h2>Magyar közösségi torrentoldal</h2><p>Jogtisztán megosztható fájlok és közösségi beszélgetés egy helyen.</p>
-  <p class="small">Kizárólag olyan tartalmat tölts fel, amelynek megosztására jogosult vagy.</p></div></div>
-  <div class="layout">
-    <div>
-      <div class="panel">
-        <div class="panel-title">Üzenőfal – Predator Chat</div>
-        <iframe class="chat-frame" src="https://roncsika38.github.io/predator.Chat/" title="Predator Chat" loading="lazy"></iframe>
-      </div>
-      <div class="panel"><div class="panel-title">Kategóriák</div><div class="panel-body cards">
-        <div class="card"><h3>🎬 Filmek</h3><span class="small">Jogtisztán megosztható filmek</span></div>
-        <div class="card"><h3>🎵 Zene</h3><span class="small">Szabadon megosztható zenék</span></div>
-        <div class="card"><h3>💻 Programok</h3><span class="small">Szabad szoftverek</span></div>
-        <div class="card"><h3>📚 Egyéb</h3><span class="small">Közösségi feltöltések</span></div>
-      </div></div>
-    </div>
-    <aside>
-      <div class="panel"><div class="panel-title">Statisztika</div><div class="panel-body stats">
-        <span>Regisztrált tagok</span><strong>—</strong>
-        <span>Online felhasználók</span><strong>—</strong>
-        <span>Torrentek száma</span><strong>—</strong>
-        <span>Mai feltöltések</span><strong>—</strong>
-        <span>Chat</span><strong>Élő felület</strong>
-      </div></div>
-      <div class="panel"><div class="panel-title">Keresés</div><div class="panel-body">
-        <input id="search" placeholder="Keresés a torrentek között">
-        <button onclick="showPage('browse')">Keresés</button>
-      </div></div>
-      <div class="panel"><div class="panel-title">Hasznos</div><div class="panel-body">
-        <p><a href="https://roncsika38.github.io/predator.Chat/" target="_blank" rel="noopener" style="color:#ff8794">Predator Chat megnyitása külön ablakban</a></p>
-        <p class="small">Ha a chat nem jelenik meg a keretben, a fenti külön linkkel nyitható meg.</p>
-      </div></div>
-    </aside>
-  </div>
+
+<div class="panel">
+<div class="panel-title">
+Üdvözlünk a Predator Torrent közösségben!
+</div>
+
+<div class="panel-body">
+<h2>Filmek és közösségi chat egy helyen</h2>
+
+<p>
+Válassz egy filmet a katalógusból,
+vagy beszélgess a Predator Chat közösségében.
+</p>
+
+<p class="small">
+A katalógusban Creative Commons licencű Blender-filmek szerepelnek.
+A videók külső videószerverről töltődnek be.
+</p>
+</div>
+</div>
+
+<div class="layout">
+
+<div>
+
+<div class="panel">
+<div class="panel-title">🎬 Filmek</div>
+
+<div class="panel-body">
+<div class="films">
+
+<article class="film">
+<h3>Big Buck Bunny (2008)</h3>
+<p>Vidám animáció egy nagy nyúlról és az erdei kalandjairól.</p>
+<p class="small">Blender Foundation · CC BY 3.0</p>
+
+<button onclick="playFilm(
+'Big Buck Bunny',
+'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+'© copyright 2008, Blender Foundation / www.bigbuckbunny.org · CC BY 3.0'
+)">
+Lejátszás
+</button>
+</article>
+
+<article class="film">
+<h3>Sintel (2010)</h3>
+<p>Fantasy animáció egy lányról, aki egy sárkányt keres.</p>
+<p class="small">Blender Foundation · CC BY 3.0</p>
+
+<button onclick="playFilm(
+'Sintel',
+'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+'© copyright Blender Foundation / durian.blender.org · CC BY 3.0'
+)">
+Lejátszás
+</button>
+</article>
+
+<article class="film">
+<h3>Tears of Steel (2012)</h3>
+<p>Látványos sci-fi rövidfilm.</p>
+<p class="small">Blender Foundation · CC BY 3.0</p>
+
+<button onclick="playFilm(
+'Tears of Steel',
+'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+'© copyright Blender Foundation / tearsofsteel.org · CC BY 3.0'
+)">
+Lejátszás
+</button>
+</article>
+
+<article class="film">
+<h3>Elephants Dream (2006)</h3>
+<p>Kísérleti animáció egy különös, gépekkel teli világról.</p>
+<p class="small">Blender Foundation · CC BY 2.5</p>
+
+<button onclick="playFilm(
+'Elephants Dream',
+'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+'© copyright 2006, Blender Foundation & Netherlands Media Art Institute · CC BY 2.5'
+)">
+Lejátszás
+</button>
+</article>
+
+</div>
+</div>
+</div>
+
+<div class="panel" id="playerPanel">
+
+<div class="panel-title" id="playerTitle">
+Filmlejátszó
+</div>
+
+<div class="panel-body">
+<p>Válassz egy filmet a fenti listából.</p>
+<div id="playerArea"></div>
+</div>
+
+</div>
+
+</div>
+
+<aside>
+
+<div class="panel">
+<div class="panel-title">Statisztika</div>
+
+<div class="panel-body stats">
+<span>Filmek a katalógusban</span>
+<strong>4</strong>
+
+<span>Chat</span>
+<strong>Beágyazva</strong>
+
+<span>Feltöltések</span>
+<strong>Hamarosan</strong>
+</div>
+</div>
+
+<div class="panel">
+<div class="panel-title">Keresés</div>
+
+<div class="panel-body">
+<input
+id="search"
+placeholder="Film keresése..."
+oninput="filterFilms()">
+</div>
+</div>
+
+<div class="panel">
+<div class="panel-title">Licenc és forrás</div>
+
+<div class="panel-body small">
+A Blender nyílt filmjei Creative Commons licenc alatt érhetők el,
+a megfelelő szerzői feltüntetéssel.
+</div>
+</div>
+
+</aside>
+
+</div>
 </section>
-<section id="browse" class="hidden"><div class="panel"><div class="panel-title">Torrentek</div><div class="panel-body"><input placeholder="Torrent keresése"><p>Még nincsenek torrentek csatlakoztatva. A valódi lista adatbázis-integrációt igényel.</p></div></div></section>
-<section id="upload" class="hidden"><div class="panel"><div class="panel-title">Feltöltés</div><div class="panel-body"><input placeholder="Fájl vagy torrent neve"><select><option>Film</option><option>Zene</option><option>Program</option><option>Egyéb</option></select><input placeholder="Saját, jogszerűen megosztható magnet link"><p class="small">A feltöltés mentése és moderálása még nincs adatbázishoz kötve.</p></div></div></section>
-<section id="community" class="hidden"><div class="panel"><div class="panel-title">Predator Chat</div><iframe class="chat-frame" src="https://roncsika38.github.io/predator.Chat/" title="Predator Chat"></iframe></div></section>
+
+<section id="films" class="hidden">
+
+<div class="panel">
+<div class="panel-title">Filmkatalógus</div>
+
+<div class="panel-body">
+<div class="films" id="filmCards"></div>
+</div>
+</div>
+
+</section>
+
+<section id="community" class="hidden">
+
+<div class="panel">
+<div class="panel-title">💬 Predator Chat</div>
+
+<iframe
+class="chat-frame"
+src="https://roncsika38.github.io/predator.Chat/"
+title="Predator Chat"
+loading="lazy">
+</iframe>
+
+<div class="panel-body small">
+<a
+href="https://roncsika38.github.io/predator.Chat/"
+target="_blank"
+rel="noopener"
+style="color:#ff8794">
+Chat megnyitása külön ablakban
+</a>
+</div>
+</div>
+
+</section>
+
 </main>
-<footer>Predator Torrent © 2026</footer>
+
+<footer>
+Predator Torrent © 2026
+</footer>
+
 <script>
-function showPage(id){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0)}
+
+const films=[
+
+{
+name:'Big Buck Bunny (2008)',
+desc:'Vidám animáció egy nagy nyúlról.',
+credit:'Blender Foundation · CC BY 3.0',
+url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+attr:'© copyright 2008, Blender Foundation / www.bigbuckbunny.org · CC BY 3.0'
+},
+
+{
+name:'Sintel (2010)',
+desc:'Fantasy animáció egy lányról, aki egy sárkányt keres.',
+credit:'Blender Foundation · CC BY 3.0',
+url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+attr:'© copyright Blender Foundation / durian.blender.org · CC BY 3.0'
+},
+
+{
+name:'Tears of Steel (2012)',
+desc:'Sci-fi rövidfilm.',
+credit:'Blender Foundation · CC BY 3.0',
+url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+attr:'© copyright Blender Foundation / tearsofsteel.org · CC BY 3.0'
+},
+
+{
+name:'Elephants Dream (2006)',
+desc:'Kísérleti animáció.',
+credit:'Blender Foundation · CC BY 2.5',
+url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+attr:'© copyright 2006, Blender Foundation & Netherlands Media Art Institute · CC BY 2.5'
+}
+
+];
+
+function showPage(id){
+
+document.querySelectorAll('main section')
+.forEach(s=>s.classList.add('hidden'));
+
+document.getElementById(id)
+.classList.remove('hidden');
+
+window.scrollTo(0,0);
+
+}
+
+function playFilm(name,url,credit){
+
+document.getElementById('playerTitle').textContent=
+'Lejátszás: '+name;
+
+document.getElementById('playerArea').innerHTML='';
+
+const v=document.createElement('video');
+
+v.className='player';
+v.controls=true;
+v.playsInline=true;
+
+const src=document.createElement('source');
+
+src.src=url;
+src.type='video/mp4';
+
+v.appendChild(src);
+
+document.getElementById('playerArea')
+.appendChild(v);
+
+const p=document.createElement('p');
+
+p.className='small';
+p.textContent=credit;
+
+document.getElementById('playerArea')
+.appendChild(p);
+
+document.getElementById('playerPanel')
+.scrollIntoView({behavior:'smooth'});
+
+v.play().catch(()=>{});
+
+}
+
+function filterFilms(){
+
+const q=document.getElementById('search')
+.value.toLowerCase();
+
+document.querySelectorAll('.film')
+.forEach(c=>{
+c.style.display=
+c.innerText.toLowerCase().includes(q)?'':'none';
+});
+
+}
+
+document.getElementById('filmCards').innerHTML=
+films.map((f,i)=>`
+<article class="film">
+<h3>${f.name}</h3>
+<p>${f.desc}</p>
+<p class="small">${f.credit}</p>
+<button onclick="playFilm(
+films[${i}].name,
+films[${i}].url,
+films[${i}].attr
+)">Lejátszás</button>
+</article>
+`).join('');
+
 </script>
+
 </body>
 </html>
