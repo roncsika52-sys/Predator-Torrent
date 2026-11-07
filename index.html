@@ -1,3 +1,4 @@
+```
 <!doctype html>
 <html lang="hu">
 <head>
@@ -93,13 +94,34 @@ footer{text-align:center;color:#777;padding:25px}
 <script>
 /* 1. A Supabase projekt URL-jét és publishable/anon kulcsát írd be ide. Ne használj service_role titkos kulcsot a böngészőben. */
 const SUPABASE_URL = "https://tmcbfjpwzeafixchsbqt.supabase.co";
-const SUPABASE_ANON_KEY = "IDE_MASOLD_BE_A_PUBLISHABLE_KULCSOT";
-const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("IDE_IRD");
-const db = configured ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
+// IDE másold be a Supabase Settings > API Keys oldalon található Publishable key TELJES értékét.
+// Ne a Secret key-t használd, és a kulcsot ne illeszd be SQL Editorba.
+const SUPABASE_ANON_KEY = "sb_publishable_qRH3wqaMjDd0gPdvvzElBw_luhhqZLP";
+
+const hasRealKey =
+  SUPABASE_ANON_KEY.startsWith("sb_publishable_") &&
+  SUPABASE_ANON_KEY.length > 30;
+
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  hasRealKey &&
+  window.supabase &&
+  typeof window.supabase.createClient === "function";
+
+const db = configured
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 let currentUser=null, activeCategory="";
 const $=id=>document.getElementById(id);
 function status(id,msg){$(id).textContent=msg}
-function ready(){if(!db){$("connectionState").textContent="Nincs beállítva";status("authStatus","Még hiányzik a Supabase Publishable key az index.html 96. sorából.");return false}return true}
+function ready(){
+  if(!db){
+    $("connectionState").textContent = "Nincs beállítva";
+    status("authStatus", "Hiányzik vagy hibás a Publishable key. A GitHub index.html fájlban a SUPABASE_ANON_KEY idézőjelei közé illeszd be a teljes, sb_publishable_ kezdetű kulcsot.");
+    return false;
+  }
+  return true;
+}
 async function refreshSession(){
  if(!ready())return;
  const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
@@ -109,8 +131,34 @@ async function refreshSession(){
  $("loginBtn").classList.toggle("hidden",!!currentUser);
  $("connectionState").textContent="Kapcsolódva";
 }
-$("signupBtn").onclick=async()=>{if(!ready())return;const email=$("email").value.trim(),password=$("password").value;if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");const {error}=await db.auth.signUp({email,password});status("authStatus",error?error.message:"Sikeres regisztrációs kérés. Nézd meg az e-mailjeidet, ha megerősítés szükséges.");};
-$("loginBtn").onclick=async()=>{if(!ready())return;const {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)return status("authStatus",error.message);currentUser=data.user;status("authStatus","Sikeres belépés.");await refreshSession();};
+$("signupBtn").onclick=async()=>{
+  if(!ready())return;
+  const email=$("email").value.trim(), password=$("password").value;
+  if(!email)return status("authStatus","Írd be az e-mail-címedet.");
+  if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");
+  status("authStatus","Regisztráció folyamatban...");
+  try {
+    const {error}=await db.auth.signUp({email,password});
+    status("authStatus",error ? error.message : "A regisztrációs kérés sikerült. Ha e-mailes megerősítés szükséges, nézd meg a postaládádat.");
+  } catch(err) {
+    status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
+  }
+};
+$("loginBtn").onclick=async()=>{
+  if(!ready())return;
+  const email=$("email").value.trim(), password=$("password").value;
+  if(!email || !password)return status("authStatus","Add meg az e-mail-címedet és a jelszavadat.");
+  status("authStatus","Belépés folyamatban...");
+  try {
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error)return status("authStatus",error.message);
+    currentUser=data.user;
+    status("authStatus","Sikeres belépés.");
+    await refreshSession();
+  } catch(err) {
+    status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
+  }
+};
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();currentUser=null;await refreshSession();};
 $("searchForm").onsubmit=e=>{e.preventDefault();loadTorrents()};
 $("categories").onclick=e=>{const a=e.target.closest("[data-cat]");if(!a)return;e.preventDefault();activeCategory=a.dataset.cat;loadTorrents()};
@@ -147,3 +195,4 @@ async function init(){if(!ready())return;await refreshSession();await loadTorren
 init();
 </script>
 </body></html>
+```
