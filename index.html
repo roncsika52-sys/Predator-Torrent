@@ -5,98 +5,138 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Predator Torrent</title>
 <style>
-:root{--red:#e32636;--bg:#101014;--panel:#1b1b22;--muted:#aaa}
+:root{--red:#e32636;--red2:#ff623d;--bg:#111114;--panel:#202024;--panel2:#29292e;--line:#39393f;--muted:#a5a5aa;--orange:#ff8a24;--green:#26c84b}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f5f5f5;font:16px Arial,sans-serif}
-header{background:#080808;border-bottom:3px solid var(--red);padding:22px 16px;text-align:center}
-header h1{margin:0;color:var(--red);letter-spacing:2px}
-header p{color:#bbb;margin:8px 0 0}
-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:12px;background:#15151a}
-nav a{color:#fff;text-decoration:none;padding:9px 13px;border:1px solid #383840;border-radius:6px}
-main{max-width:1050px;margin:24px auto;padding:0 14px}
-.notice{background:#2b2020;border-left:4px solid var(--red);padding:12px 14px;border-radius:6px;color:#eee;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}
-.card{background:var(--panel);border:1px solid #34343d;border-radius:10px;overflow:hidden}
-.poster{height:125px;background:linear-gradient(135deg,#370d12,#17171d);display:grid;place-items:center;color:#ff6671;font-size:24px;font-weight:bold}
-.content{padding:15px}
-h2{font-size:19px;margin:0 0 8px}
-p{color:#c8c8ce;line-height:1.45}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.btn{display:inline-block;background:var(--red);color:white;text-decoration:none;padding:10px 12px;border-radius:6px;font-weight:bold}
-.btn.secondary{background:#33333c}
-small{color:var(--muted)}
-footer{text-align:center;color:#888;padding:30px 12px}
+body{margin:0;background:radial-gradient(circle at 50% 0,#28201c 0,#111114 55%);color:#eee;font:15px Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+.top{height:76px;background:#09090b;border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100% - 1380px)/2));gap:20px}
+.brand{font-size:25px;font-weight:900;letter-spacing:2px;color:var(--red);white-space:nowrap}
+.brand span{color:#eee}
+.search{display:flex;max-width:480px;flex:1}
+.search input{width:100%;background:#222227;border:1px solid #444;border-radius:7px 0 0 7px;padding:12px;color:#fff;outline:none}
+.search button,.redbtn{background:var(--red);border:0;color:white;font-weight:bold;padding:12px 17px;border-radius:0 7px 7px 0;cursor:pointer}
+.account{color:#ddd;white-space:nowrap;font-size:13px}
+.nav{background:#1a1a1e;border-bottom:1px solid #34343a;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:10px}
+.nav a{padding:10px 15px;border-radius:5px;color:#ddd;font-weight:bold;font-size:13px}
+.nav a:hover,.nav a.active{background:#3a2023;color:#ff727b}
+.wrap{max-width:1380px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:220px minmax(400px,1fr) 300px;gap:16px;align-items:start}
+.panel{background:linear-gradient(145deg,#242428,#1b1b1f);border:1px solid #39393e;border-radius:8px;box-shadow:0 8px 22px #0005;overflow:hidden;margin-bottom:15px}
+.panelhead{padding:12px 14px;background:repeating-linear-gradient(135deg,#29292d,#29292d 8px,#252529 8px,#252529 16px);border-bottom:1px solid #414147;font-weight:bold;color:#ddd}
+.panelbody{padding:13px}
+.side-link{display:flex;justify-content:space-between;padding:11px 9px;border-bottom:1px solid #333339;color:#ddd;font-size:14px}
+.side-link:last-child{border:0}.side-link b{color:var(--orange)}
+.notice{padding:14px;text-align:center;line-height:1.5;font-weight:bold;background:#242428;border:1px solid #45454a;border-radius:7px;margin-bottom:15px}
+.notice em{color:#ffb044;font-style:normal}
+.chatbox{height:445px;overflow:auto;padding:13px 14px;background:radial-gradient(ellipse at center,#29292d,#1d1d21)}
+.msg{display:inline-flex;align-items:center;gap:10px;max-width:100%;margin:7px 0;padding:10px 12px;border:1px solid #39393f;border-radius:24px;background:#242428;box-shadow:0 3px 8px #0004;line-height:1.4}
+.time{font-size:11px;color:#aaa;border:1px solid #444;border-radius:12px;padding:3px 7px;white-space:nowrap}
+.arrow{color:var(--orange);font-size:20px}
+.user{font-weight:bold;color:#48bd52;white-space:nowrap}
+.msgtext{color:#ff922e;overflow-wrap:anywhere}
+.chatwrite{display:flex;background:#35353a;padding:0}
+.chatwrite input{flex:1;min-width:0;background:transparent;border:0;padding:13px;color:white;font-size:15px;outline:none}
+.chatwrite button{background:var(--orange);color:#fff;border:0;padding:0 18px;font-weight:bold;cursor:pointer}
+.chatnote{font-size:11px;color:#999;padding:8px 12px;background:#19191d}
+.online{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:#29292e;border:1px solid #414148;border-radius:20px;padding:7px 10px;font-size:12px}
+.dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:6px}
+.statsrow{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid #34343a}
+.statsrow:last-child{border:0}.statsrow span{color:#ddd}.statsrow b{color:var(--orange);text-align:right}
+.statsgroup{margin-top:12px;padding-top:10px;border-top:1px solid #444}
+.movie-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.movie{display:flex;gap:12px;background:#252529;border:1px solid #3d3d43;border-radius:7px;padding:10px;min-width:0}
+.poster{width:82px;min-width:82px;height:112px;border-radius:4px;background:linear-gradient(145deg,#5c111c,#17171b);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;color:#ffd5d8;font-size:11px;font-weight:bold}
+.movie h3{font-size:15px;margin:3px 0 7px;color:#fff}.movie p{font-size:12px;color:#bbb;line-height:1.4;margin:0 0 8px}
+.tag{font-size:10px;color:#ffb35d}
+.movie-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.movie-actions a{font-size:11px;padding:7px 9px;border-radius:4px;background:var(--red);font-weight:bold}
+.movie-actions a.alt{background:#444}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px}
+.section-title h2{font-size:18px;margin:0}.section-title a{font-size:12px;color:#ff9a40}
+footer{text-align:center;color:#777;padding:25px 12px;font-size:12px}
+@media(max-width:1050px){.wrap{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}.right .panel{margin:0}}
+@media(max-width:700px){.top{height:auto;flex-wrap:wrap;padding:15px;gap:12px}.brand{font-size:21px}.search{order:3;flex-basis:100%;max-width:none}.account{margin-left:auto}.wrap{display:flex;flex-direction:column}.left,.center,.right{width:100%}.left{order:1}.center{order:2}.right{order:3;display:block}.right .panel{margin-bottom:15px}.movie-grid{grid-template-columns:1fr}.chatbox{height:360px}.nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.nav a{white-space:nowrap}}
 </style>
 </head>
 <body>
-<header>
-  <h1>PREDATOR TORRENT</h1>
-  <p>Filmek és videók – jogszerűen megosztható tartalmak</p>
+<header class="top">
+  <a class="brand" href="#">PREDATOR <span>TORRENT</span></a>
+  <form class="search" onsubmit="event.preventDefault();searchMovies()">
+    <input id="searchInput" placeholder="Film vagy torrent keresése...">
+    <button type="submit">Keresés</button>
+  </form>
+  <div class="account">Üdvözlünk! <b>Vendég</b>　<a href="#belepes">Belépés</a> / <a href="#regisztracio">Regisztráció</a></div>
 </header>
-<nav>
-  <a href="#filmek">Filmek</a>
-  <a href="#tudnivalo">Letöltési tudnivalók</a>
+<nav class="nav">
+  <a class="active" href="#">Főoldal</a><a href="#filmek">Filmek</a><a href="#filmek">Kategóriák</a><a href="#feltoltes">Feltöltés</a><a href="#uzenofal">Üzenőfal</a><a href="#online">Online tagok</a><a href="#belepes">Profil</a>
 </nav>
-<main>
-  <section id="tudnivalo" class="notice">
-    Ez a mintaoldal jogszerűen megosztható, Creative Commons filmeket mutat be.
-    A „Letöltés” gomb a külső videófájlra mutat. A böngésző a külső tárhely szabályai
-    miatt előfordulhat, hogy lejátsza vagy új lapon nyitja meg a fájlt ahelyett,
-    hogy automatikusan letöltené.
-  </section>
-  <h2 id="filmek" style="margin-top:26px">Filmkatalógus</h2>
-  <div class="grid">
-    <article class="card">
-      <div class="poster">BIG BUCK BUNNY</div>
-      <div class="content">
-        <h2>Big Buck Bunny</h2>
-        <p>Animációs rövidfilm. Blender nyílt filmprojekt.</p>
-        <small>Előnézeti videó és külső fájllink.</small>
-        <div class="actions">
-          <a class="btn" href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" target="_blank" rel="noopener">Lejátszás</a>
-          <a class="btn secondary" href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" download>Letöltés</a>
-        </div>
+<div class="wrap">
+  <aside class="left">
+    <section class="panel"><div class="panelhead">Navigáció</div><div class="panelbody" style="padding:4px 10px">
+      <a class="side-link" href="#filmek">Összes film <b>›</b></a>
+      <a class="side-link" href="#filmek">Akció <b>›</b></a>
+      <a class="side-link" href="#filmek">Vígjáték <b>›</b></a>
+      <a class="side-link" href="#filmek">Sci-fi <b>›</b></a>
+      <a class="side-link" href="#filmek">Animáció <b>›</b></a>
+      <a class="side-link" href="#feltoltes">Film feltöltése <b>+</b></a>
+    </div></section>
+    <section class="panel"><div class="panelhead">Értesítések</div><div class="panelbody"><b style="color:var(--orange)">0 új értesítés</b><p style="font-size:12px;color:#aaa;margin-bottom:0">A bejelentkezés után itt jelennek meg az értesítéseid.</p></div></section>
+  </aside>
+
+  <main class="center">
+    <div class="notice">Üdvözlünk a <em>Predator Torrent</em> oldalán!<br>Filmkatalógus és közösségi üzenőfal egy helyen.</div>
+    <section class="panel" id="uzenofal">
+      <div class="panelhead">Üzenőfal</div>
+      <div class="chatbox" id="chatMessages">
+        <div class="msg"><span class="time">22:06:52</span><span class="arrow">›</span><span class="user">Predator</span><span class="msgtext">Üdvözlünk az oldalon!</span></div><br>
+        <div class="msg"><span class="time">21:41:10</span><span class="arrow">›</span><span class="user">Rendszer</span><span class="msgtext">Jó böngészést kívánunk!</span></div><br>
+        <div class="msg"><span class="time">19:00:39</span><span class="arrow">›</span><span class="user">Predator</span><span class="msgtext">Ide kerülnek a közösség üzenetei.</span></div>
       </div>
-    </article>
-    <article class="card">
-      <div class="poster">SINTEL</div>
-      <div class="content">
-        <h2>Sintel</h2>
-        <p>Fantasy animációs rövidfilm, Blender nyílt filmprojekt.</p>
-        <small>Előnézeti videó és külső fájllink.</small>
-        <div class="actions">
-          <a class="btn" href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" target="_blank" rel="noopener">Lejátszás</a>
-          <a class="btn secondary" href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" download>Letöltés</a>
-        </div>
-      </div>
-    </article>
-    <article class="card">
-      <div class="poster">TEARS OF STEEL</div>
-      <div class="content">
-        <h2>Tears of Steel</h2>
-        <p>Rövid sci-fi film, Blender nyílt filmprojekt.</p>
-        <small>Előnézeti videó és külső fájllink.</small>
-        <div class="actions">
-          <a class="btn" href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" target="_blank" rel="noopener">Lejátszás</a>
-          <a class="btn secondary" href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" download>Letöltés</a>
-        </div>
-      </div>
-    </article>
-    <article class="card">
-      <div class="poster">ELEPHANTS DREAM</div>
-      <div class="content">
-        <h2>Elephants Dream</h2>
-        <p>Kísérleti animációs film, Blender nyílt filmprojekt.</p>
-        <small>Előnézeti videó és külső fájllink.</small>
-        <div class="actions">
-          <a class="btn" href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" target="_blank" rel="noopener">Lejátszás</a>
-          <a class="btn secondary" href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" download>Letöltés</a>
-        </div>
-      </div>
-    </article>
-  </div>
-  <p style="margin-top:24px;color:#aaa">A filmek nem kerülnek feltöltésre a GitHub tárhelyedre; a gombok külső videófájlokra mutatnak. Valódi, garantált letöltéshez saját tárhelyre kell feltölteni a jogszerűen megosztható videófájlokat.</p>
-</main>
-<footer>Predator Torrent · Piros-fekete megjelenés</footer>
+      <form class="chatwrite" onsubmit="sendDemoMessage(event)">
+        <input id="chatInput" placeholder="Írd be ide az üzeneted!" maxlength="500">
+        <button type="submit">Küldés</button>
+      </form>
+      <div class="chatnote">Előnézeti felület: az üzenetek most csak ebben a böngészőben jelennek meg. Valódi, minden tagnak közös élő üzenőfalhoz adatbázis és bejelentkezés szükséges.</div>
+    </section>
+    <section class="panel" id="online"><div class="panelhead">Online felhasználók</div><div class="panelbody online"><span class="pill"><i class="dot"></i>Predator</span><span class="pill"><i class="dot"></i>Vendég</span></div></section>
+    <div class="section-title" id="filmek"><h2>Legújabb filmek</h2><a href="#filmek">Összes film »</a></div>
+    <div class="movie-grid" id="movieGrid">
+      <article class="movie"><div class="poster">BIG BUCK<br>BUNNY</div><div><h3>Big Buck Bunny</h3><p>Animációs rövidfilm, Blender nyílt filmprojekt.</p><span class="tag">ANIMÁCIÓ · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" download>Letöltés</a></div></div></article>
+      <article class="movie"><div class="poster">SINTEL</div><div><h3>Sintel</h3><p>Fantasy animációs rövidfilm, Blender nyílt filmprojekt.</p><span class="tag">FANTASY · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" download>Letöltés</a></div></div></article>
+      <article class="movie"><div class="poster">TEARS OF<br>STEEL</div><div><h3>Tears of Steel</h3><p>Rövid sci-fi film, Blender nyílt filmprojekt.</p><span class="tag">SCI-FI · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" download>Letöltés</a></div></div></article>
+      <article class="movie"><div class="poster">ELEPHANTS<br>DREAM</div><div><h3>Elephants Dream</h3><p>Kísérleti animációs film, Blender nyílt filmprojekt.</p><span class="tag">ANIMÁCIÓ · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" download>Letöltés</a></div></div></article>
+    </div>
+  </main>
+
+  <aside class="right">
+    <section class="panel"><div class="panelhead">Statisztika <span style="float:right;color:#aaa;font-weight:normal">22:55</span></div><div class="panelbody">
+      <div class="statsrow"><span>Limit</span><b>—</b></div><div class="statsrow"><span>Regisztrált</span><b>—</b></div><div class="statsrow"><span>Online most</span><b>2 (minta)</b></div><div class="statsrow"><span>Mai regisztráció</span><b>—</b></div>
+      <div class="statsgroup"><div class="statsrow"><span>Torrentek száma</span><b>4 minta</b></div><div class="statsrow"><span>Ma feltöltött</span><b>—</b></div><div class="statsrow"><span>Feltöltők</span><b>—</b></div><div class="statsrow"><span>Letöltők</span><b>—</b></div><div class="statsrow"><span>Kapcsolatok</span><b>—</b></div><div class="statsrow"><span>Forgalom</span><b>—</b></div></div>
+    </div></section>
+    <section class="panel" id="feltoltes"><div class="panelhead">Feltöltés</div><div class="panelbody"><p style="font-size:13px;margin-top:0">Ide kerül majd a film- és torrentfeltöltő űrlap.</p><a class="redbtn" style="display:inline-block;border-radius:5px" href="#belepes">Belépés szükséges</a><p style="font-size:11px;color:#999;margin-bottom:0">Csak olyan tartalmat tölts fel, amelynek megosztására jogosult vagy.</p></div></section>
+    <section class="panel"><div class="panelhead">Bejelentkezés</div><div class="panelbody" id="belepes"><p style="font-size:13px;margin-top:0">A regisztráció és belépés adatbázis-kapcsolat után kapcsolható be.</p><a href="#regisztracio" style="color:#ff9a40" id="regisztracio">Regisztrációs felület előkészítve »</a></div></section>
+  </aside>
+</div>
+<footer>Predator Torrent · Piros-fekete közösségi filmoldal · Csak jogszerűen megosztható tartalmak</footer>
+<script>
+function sendDemoMessage(e){
+  e.preventDefault();
+  const input=document.getElementById('chatInput');
+  const value=input.value.trim();
+  if(!value)return;
+  const row=document.createElement('div');row.className='msg';
+  const now=new Date().toLocaleTimeString('hu-HU');
+  const time=document.createElement('span');time.className='time';time.textContent=now;
+  const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='›';
+  const user=document.createElement('span');user.className='user';user.textContent='Vendég';
+  const msg=document.createElement('span');msg.className='msgtext';msg.textContent=value;
+  row.append(time,arrow,user,msg);
+  const box=document.getElementById('chatMessages');box.append(row,document.createElement('br'));box.scrollTop=box.scrollHeight;input.value='';
+}
+function searchMovies(){
+  const q=document.getElementById('searchInput').value.trim().toLocaleLowerCase('hu');
+  document.querySelectorAll('#movieGrid .movie').forEach(card=>{card.style.display=card.innerText.toLocaleLowerCase('hu').includes(q)?'flex':'none';});
+}
+</script>
 </body>
 </html>
