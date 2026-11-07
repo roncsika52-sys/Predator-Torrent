@@ -1,142 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hu">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Predator Torrent</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--red:#e32636;--red2:#ff623d;--bg:#111114;--panel:#202024;--panel2:#29292e;--line:#39393f;--muted:#a5a5aa;--orange:#ff8a24;--green:#26c84b}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 50% 0,#28201c 0,#111114 55%);color:#eee;font:15px Arial,sans-serif}
-a{color:inherit;text-decoration:none}
-.top{height:76px;background:#09090b;border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100% - 1380px)/2));gap:20px}
-.brand{font-size:25px;font-weight:900;letter-spacing:2px;color:var(--red);white-space:nowrap}
-.brand span{color:#eee}
-.search{display:flex;max-width:480px;flex:1}
-.search input{width:100%;background:#222227;border:1px solid #444;border-radius:7px 0 0 7px;padding:12px;color:#fff;outline:none}
-.search button,.redbtn{background:var(--red);border:0;color:white;font-weight:bold;padding:12px 17px;border-radius:0 7px 7px 0;cursor:pointer}
-.account{color:#ddd;white-space:nowrap;font-size:13px}
-.nav{background:#1a1a1e;border-bottom:1px solid #34343a;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:10px}
-.nav a{padding:10px 15px;border-radius:5px;color:#ddd;font-weight:bold;font-size:13px}
-.nav a:hover,.nav a.active{background:#3a2023;color:#ff727b}
-.wrap{max-width:1380px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:220px minmax(400px,1fr) 300px;gap:16px;align-items:start}
-.panel{background:linear-gradient(145deg,#242428,#1b1b1f);border:1px solid #39393e;border-radius:8px;box-shadow:0 8px 22px #0005;overflow:hidden;margin-bottom:15px}
-.panelhead{padding:12px 14px;background:repeating-linear-gradient(135deg,#29292d,#29292d 8px,#252529 8px,#252529 16px);border-bottom:1px solid #414147;font-weight:bold;color:#ddd}
-.panelbody{padding:13px}
-.side-link{display:flex;justify-content:space-between;padding:11px 9px;border-bottom:1px solid #333339;color:#ddd;font-size:14px}
-.side-link:last-child{border:0}.side-link b{color:var(--orange)}
-.notice{padding:14px;text-align:center;line-height:1.5;font-weight:bold;background:#242428;border:1px solid #45454a;border-radius:7px;margin-bottom:15px}
-.notice em{color:#ffb044;font-style:normal}
-.chatbox{height:445px;overflow:auto;padding:13px 14px;background:radial-gradient(ellipse at center,#29292d,#1d1d21)}
-.msg{display:inline-flex;align-items:center;gap:10px;max-width:100%;margin:7px 0;padding:10px 12px;border:1px solid #39393f;border-radius:24px;background:#242428;box-shadow:0 3px 8px #0004;line-height:1.4}
-.time{font-size:11px;color:#aaa;border:1px solid #444;border-radius:12px;padding:3px 7px;white-space:nowrap}
-.arrow{color:var(--orange);font-size:20px}
-.user{font-weight:bold;color:#48bd52;white-space:nowrap}
-.msgtext{color:#ff922e;overflow-wrap:anywhere}
-.chatwrite{display:flex;background:#35353a;padding:0}
-.chatwrite input{flex:1;min-width:0;background:transparent;border:0;padding:13px;color:white;font-size:15px;outline:none}
-.chatwrite button{background:var(--orange);color:#fff;border:0;padding:0 18px;font-weight:bold;cursor:pointer}
-.chatnote{font-size:11px;color:#999;padding:8px 12px;background:#19191d}
-.online{display:flex;flex-wrap:wrap;gap:8px}
-.pill{background:#29292e;border:1px solid #414148;border-radius:20px;padding:7px 10px;font-size:12px}
-.dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:6px}
-.statsrow{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid #34343a}
-.statsrow:last-child{border:0}.statsrow span{color:#ddd}.statsrow b{color:var(--orange);text-align:right}
-.statsgroup{margin-top:12px;padding-top:10px;border-top:1px solid #444}
-.movie-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.movie{display:flex;gap:12px;background:#252529;border:1px solid #3d3d43;border-radius:7px;padding:10px;min-width:0}
-.poster{width:82px;min-width:82px;height:112px;border-radius:4px;background:linear-gradient(145deg,#5c111c,#17171b);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;color:#ffd5d8;font-size:11px;font-weight:bold}
-.movie h3{font-size:15px;margin:3px 0 7px;color:#fff}.movie p{font-size:12px;color:#bbb;line-height:1.4;margin:0 0 8px}
-.tag{font-size:10px;color:#ffb35d}
-.movie-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.movie-actions a{font-size:11px;padding:7px 9px;border-radius:4px;background:var(--red);font-weight:bold}
-.movie-actions a.alt{background:#444}
-.section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px}
-.section-title h2{font-size:18px;margin:0}.section-title a{font-size:12px;color:#ff9a40}
-footer{text-align:center;color:#777;padding:25px 12px;font-size:12px}
-@media(max-width:1050px){.wrap{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}.right .panel{margin:0}}
-@media(max-width:700px){.top{height:auto;flex-wrap:wrap;padding:15px;gap:12px}.brand{font-size:21px}.search{order:3;flex-basis:100%;max-width:none}.account{margin-left:auto}.wrap{display:flex;flex-direction:column}.left,.center,.right{width:100%}.left{order:1}.center{order:2}.right{order:3;display:block}.right .panel{margin-bottom:15px}.movie-grid{grid-template-columns:1fr}.chatbox{height:360px}.nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.nav a{white-space:nowrap}}
+:root{--red:#e32636;--bg:#111114;--panel:#202024;--line:#3b3b42;--muted:#aaa;--orange:#ff922e}
+*{box-sizing:border-box}body{margin:0;background:#111114;color:#eee;font:14px Arial,sans-serif}
+header{background:#080809;border-bottom:3px solid var(--red);padding:17px max(16px,calc((100% - 1360px)/2));display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:900;letter-spacing:2px;color:var(--red);white-space:nowrap}.logo span{color:#fff}
+.search{display:flex;flex:1;min-width:210px}.search input{flex:1;min-width:0}
+input,textarea,select{background:#303036;border:1px solid #4a4a52;color:#fff;border-radius:5px;padding:10px;font:inherit}
+button,.btn{border:0;background:var(--red);color:#fff;border-radius:5px;padding:10px 13px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+button.secondary,.btn.secondary{background:#45454d}button:disabled{opacity:.5;cursor:not-allowed}
+.account{margin-left:auto;color:#ccc}.nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;background:#1b1b1f;padding:9px}.nav a{color:#ddd;padding:10px 13px;text-decoration:none;border-radius:5px}.nav a:hover{background:#3c2024}
+.layout{max-width:1360px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:210px minmax(0,1fr) 280px;gap:15px}
+.panel{background:linear-gradient(145deg,#242428,#1b1b1f);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:14px}
+.ph{padding:12px 14px;background:repeating-linear-gradient(135deg,#2b2b30,#2b2b30 8px,#252529 8px,#252529 16px);border-bottom:1px solid #444;font-weight:bold}.pb{padding:13px}
+.side a{display:block;padding:10px 7px;color:#ddd;text-decoration:none;border-bottom:1px solid #37373d}.side a:hover{color:#ff9b46}
+.notice{padding:13px;text-align:center;background:#292326;border:1px solid #57343a;border-radius:7px;margin-bottom:14px;line-height:1.5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}
+.chatlog{height:250px;overflow:auto;padding:12px;background:#1b1b1f}.chatline{padding:8px 10px;border:1px solid #38383e;border-radius:20px;display:inline-block;margin:5px 0;max-width:100%;overflow-wrap:anywhere}.chatline b{color:#4ac45a;margin:0 6px}.chatline span{color:var(--orange)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #393940;vertical-align:top}th{color:#ffad62;font-size:12px}td{font-size:13px}td small{color:#aaa}.torrent-name{font-weight:bold;color:#fff}.empty{color:#aaa;text-align:center;padding:20px}
+.stat{display:flex;justify-content:space-between;padding:7px 2px;border-bottom:1px solid #37373d}.stat b{color:var(--orange)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formgrid .wide{grid-column:1/-1}
+label{display:block;color:#ccc;font-size:12px;margin-bottom:5px}.field input,.field textarea,.field select{width:100%}
+.hidden{display:none!important}.status{font-size:12px;color:#ffb46a;min-height:18px;margin-top:8px}.muted{color:#aaa;font-size:12px;line-height:1.5}
+footer{text-align:center;color:#777;padding:25px}
+@media(max-width:980px){.layout{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+@media(max-width:680px){header{padding:14px}.layout{display:flex;flex-direction:column}.layout>*{width:100%}.right{display:block}.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}table{font-size:12px}th,td{padding:8px 5px}.account{margin-left:0}.logo{font-size:21px}}
 </style>
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="#">PREDATOR <span>TORRENT</span></a>
-  <form class="search" onsubmit="event.preventDefault();searchMovies()">
-    <input id="searchInput" placeholder="Film vagy torrent keresése...">
-    <button type="submit">Keresés</button>
-  </form>
-  <div class="account">Üdvözlünk! <b>Vendég</b>　<a href="#belepes">Belépés</a> / <a href="#regisztracio">Regisztráció</a></div>
+<header>
+  <a class="logo" href="#">PREDATOR <span>TORRENT</span></a>
+  <form class="search" id="searchForm"><input id="search" placeholder="Torrent keresése..."><button>Keresés</button></form>
+  <div class="account" id="accountText">Vendég</div>
 </header>
 <nav class="nav">
-  <a class="active" href="#">Főoldal</a><a href="#filmek">Filmek</a><a href="#filmek">Kategóriák</a><a href="#feltoltes">Feltöltés</a><a href="#uzenofal">Üzenőfal</a><a href="#online">Online tagok</a><a href="#belepes">Profil</a>
+  <a href="#torrents">Főoldal / Torrentek</a><a href="#upload">Feltöltés</a><a href="#wall">Üzenőfal</a><a href="#stats">Statisztika</a><a href="#auth">Fiók</a>
 </nav>
-<div class="wrap">
-  <aside class="left">
-    <section class="panel"><div class="panelhead">Navigáció</div><div class="panelbody" style="padding:4px 10px">
-      <a class="side-link" href="#filmek">Összes film <b>›</b></a>
-      <a class="side-link" href="#filmek">Akció <b>›</b></a>
-      <a class="side-link" href="#filmek">Vígjáték <b>›</b></a>
-      <a class="side-link" href="#filmek">Sci-fi <b>›</b></a>
-      <a class="side-link" href="#filmek">Animáció <b>›</b></a>
-      <a class="side-link" href="#feltoltes">Film feltöltése <b>+</b></a>
-    </div></section>
-    <section class="panel"><div class="panelhead">Értesítések</div><div class="panelbody"><b style="color:var(--orange)">0 új értesítés</b><p style="font-size:12px;color:#aaa;margin-bottom:0">A bejelentkezés után itt jelennek meg az értesítéseid.</p></div></section>
-  </aside>
-
-  <main class="center">
-    <div class="notice">Üdvözlünk a <em>Predator Torrent</em> oldalán!<br>Filmkatalógus és közösségi üzenőfal egy helyen.</div>
-    <section class="panel" id="uzenofal">
-      <div class="panelhead">Üzenőfal</div>
-      <div class="chatbox" id="chatMessages">
-        <div class="msg"><span class="time">22:06:52</span><span class="arrow">›</span><span class="user">Predator</span><span class="msgtext">Üdvözlünk az oldalon!</span></div><br>
-        <div class="msg"><span class="time">21:41:10</span><span class="arrow">›</span><span class="user">Rendszer</span><span class="msgtext">Jó böngészést kívánunk!</span></div><br>
-        <div class="msg"><span class="time">19:00:39</span><span class="arrow">›</span><span class="user">Predator</span><span class="msgtext">Ide kerülnek a közösség üzenetei.</span></div>
-      </div>
-      <form class="chatwrite" onsubmit="sendDemoMessage(event)">
-        <input id="chatInput" placeholder="Írd be ide az üzeneted!" maxlength="500">
-        <button type="submit">Küldés</button>
-      </form>
-      <div class="chatnote">Előnézeti felület: az üzenetek most csak ebben a böngészőben jelennek meg. Valódi, minden tagnak közös élő üzenőfalhoz adatbázis és bejelentkezés szükséges.</div>
-    </section>
-    <section class="panel" id="online"><div class="panelhead">Online felhasználók</div><div class="panelbody online"><span class="pill"><i class="dot"></i>Predator</span><span class="pill"><i class="dot"></i>Vendég</span></div></section>
-    <div class="section-title" id="filmek"><h2>Legújabb filmek</h2><a href="#filmek">Összes film »</a></div>
-    <div class="movie-grid" id="movieGrid">
-      <article class="movie"><div class="poster">BIG BUCK<br>BUNNY</div><div><h3>Big Buck Bunny</h3><p>Animációs rövidfilm, Blender nyílt filmprojekt.</p><span class="tag">ANIMÁCIÓ · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" download>Letöltés</a></div></div></article>
-      <article class="movie"><div class="poster">SINTEL</div><div><h3>Sintel</h3><p>Fantasy animációs rövidfilm, Blender nyílt filmprojekt.</p><span class="tag">FANTASY · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" download>Letöltés</a></div></div></article>
-      <article class="movie"><div class="poster">TEARS OF<br>STEEL</div><div><h3>Tears of Steel</h3><p>Rövid sci-fi film, Blender nyílt filmprojekt.</p><span class="tag">SCI-FI · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" download>Letöltés</a></div></div></article>
-      <article class="movie"><div class="poster">ELEPHANTS<br>DREAM</div><div><h3>Elephants Dream</h3><p>Kísérleti animációs film, Blender nyílt filmprojekt.</p><span class="tag">ANIMÁCIÓ · MINTA</span><div class="movie-actions"><a href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" target="_blank" rel="noopener">Megnézem</a><a class="alt" href="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" download>Letöltés</a></div></div></article>
-    </div>
-  </main>
-
-  <aside class="right">
-    <section class="panel"><div class="panelhead">Statisztika <span style="float:right;color:#aaa;font-weight:normal">22:55</span></div><div class="panelbody">
-      <div class="statsrow"><span>Limit</span><b>—</b></div><div class="statsrow"><span>Regisztrált</span><b>—</b></div><div class="statsrow"><span>Online most</span><b>2 (minta)</b></div><div class="statsrow"><span>Mai regisztráció</span><b>—</b></div>
-      <div class="statsgroup"><div class="statsrow"><span>Torrentek száma</span><b>4 minta</b></div><div class="statsrow"><span>Ma feltöltött</span><b>—</b></div><div class="statsrow"><span>Feltöltők</span><b>—</b></div><div class="statsrow"><span>Letöltők</span><b>—</b></div><div class="statsrow"><span>Kapcsolatok</span><b>—</b></div><div class="statsrow"><span>Forgalom</span><b>—</b></div></div>
-    </div></section>
-    <section class="panel" id="feltoltes"><div class="panelhead">Feltöltés</div><div class="panelbody"><p style="font-size:13px;margin-top:0">Ide kerül majd a film- és torrentfeltöltő űrlap.</p><a class="redbtn" style="display:inline-block;border-radius:5px" href="#belepes">Belépés szükséges</a><p style="font-size:11px;color:#999;margin-bottom:0">Csak olyan tartalmat tölts fel, amelynek megosztására jogosult vagy.</p></div></section>
-    <section class="panel"><div class="panelhead">Bejelentkezés</div><div class="panelbody" id="belepes"><p style="font-size:13px;margin-top:0">A regisztráció és belépés adatbázis-kapcsolat után kapcsolható be.</p><a href="#regisztracio" style="color:#ff9a40" id="regisztracio">Regisztrációs felület előkészítve »</a></div></section>
-  </aside>
+<div class="layout">
+<aside class="left">
+ <section class="panel"><div class="ph">Kategóriák</div><div class="pb side" id="categories">
+  <a href="#" data-cat="">Összes torrent</a><a href="#" data-cat="Film">Filmek</a><a href="#" data-cat="Sorozat">Sorozatok</a><a href="#" data-cat="Dokumentum">Dokumentumfilmek</a><a href="#" data-cat="Animáció">Animáció</a><a href="#" data-cat="Egyéb">Egyéb</a>
+ </div></section>
+ <section class="panel"><div class="ph">Fiók</div><div class="pb muted">Feltöltéshez és hozzászóláshoz be kell jelentkezned. Csak olyan fájlt ossz meg, amelynek terjesztésére jogosult vagy.</div></section>
+</aside>
+<main class="center">
+ <div class="notice"><b>Üdvözöl a Predator Torrent!</b><br>Valódi közösségi torrentkatalógus – saját feltöltésekkel, kereséssel és letölthető torrentfájlokkal.</div>
+ <section class="panel" id="auth"><div class="ph">Regisztráció / Belépés</div><div class="pb">
+  <div class="formgrid">
+   <div class="field"><label>E-mail cím</label><input id="email" type="email" autocomplete="email" placeholder="email@example.com"></div>
+   <div class="field"><label>Jelszó</label><input id="password" type="password" autocomplete="current-password" placeholder="Legalább 8 karakter"></div>
+  </div>
+  <div class="row" style="margin-top:10px"><button id="signupBtn">Regisztráció</button><button class="secondary" id="loginBtn">Belépés</button><button class="secondary hidden" id="logoutBtn">Kilépés</button></div>
+  <div class="status" id="authStatus"></div>
+  <p class="muted">A regisztráció után a Supabase beállításától függően e-mailes megerősítés szükséges lehet.</p>
+ </div></section>
+ <section class="panel" id="upload"><div class="ph">Torrent feltöltése</div><div class="pb">
+  <form id="uploadForm" class="formgrid">
+   <div class="field"><label>Film / torrent címe</label><input id="title" required maxlength="120"></div>
+   <div class="field"><label>Kategória</label><select id="category"><option>Film</option><option>Sorozat</option><option>Dokumentum</option><option>Animáció</option><option>Egyéb</option></select></div>
+   <div class="field wide"><label>Leírás</label><textarea id="description" rows="2" maxlength="1200"></textarea></div>
+   <div class="field"><label>.torrent fájl</label><input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent" required></div>
+   <div class="field"><label>Magnet link (ha van)</label><input id="magnet" type="url" placeholder="magnet:?xt=..."></div>
+   <div class="field wide"><label><input id="rights" type="checkbox" required style="width:auto"> Kijelentem, hogy jogosult vagyok ezt a tartalmat megosztani.</label></div>
+   <div class="wide"><button type="submit">Feltöltés elküldése</button><div class="status" id="uploadStatus"></div></div>
+  </form>
+  <p class="muted">A feltöltés .torrent metaadatot tárol. A tényleges P2P letöltéshez a torrentnek működő trackert vagy DHT-t és seedelőket kell tartalmaznia. Ez az oldal önmagában nem üzemeltet torrent trackert.</p>
+ </div></section>
+ <section class="panel" id="torrents"><div class="ph">Torrentek</div><div class="pb" style="padding:0;overflow-x:auto">
+  <table><thead><tr><th>Név / leírás</th><th>Kategória</th><th>Feltöltő</th><th>Dátum</th><th>Letöltés</th></tr></thead><tbody id="torrentRows"><tr><td colspan="5" class="empty">Torrentek betöltése...</td></tr></tbody></table>
+ </div></section>
+ <section class="panel" id="wall"><div class="ph">Üzenőfal</div><div class="pb">
+  <form id="wallForm" class="row"><input id="wallText" maxlength="500" placeholder="Írd be az üzeneted..." required><button>Küldés</button></form>
+  <div class="status" id="wallStatus"></div><div id="wallRows" class="muted" style="margin-top:10px">Üzenetek betöltése...</div>
+ </div></section>
+</main>
+<aside class="right">
+ <section class="panel" id="stats"><div class="ph">Statisztika</div><div class="pb">
+  <div class="stat"><span>Regisztrált tagok</span><b id="memberCount">—</b></div>
+  <div class="stat"><span>Torrentek száma</span><b id="torrentCount">—</b></div>
+  <div class="stat"><span>Üzenetek</span><b id="wallCount">—</b></div>
+  <div class="stat"><span>Oldal állapota</span><b id="connectionState">Kapcsolódás</b></div>
+ </div></section>
+ <section class="panel"><div class="ph">Fontos tudnivaló</div><div class="pb muted">A Predator Torrent önálló rendszer. Más oldal privát szerveréhez vagy adatbázisához nem csatlakozik. Jogvédett tartalom engedély nélküli terjesztését nem támogatja.</div></section>
+</aside>
 </div>
-<footer>Predator Torrent · Piros-fekete közösségi filmoldal · Csak jogszerűen megosztható tartalmak</footer>
+<footer>Predator Torrent · Saját közösségi torrentkatalógus</footer>
 <script>
-function sendDemoMessage(e){
-  e.preventDefault();
-  const input=document.getElementById('chatInput');
-  const value=input.value.trim();
-  if(!value)return;
-  const row=document.createElement('div');row.className='msg';
-  const now=new Date().toLocaleTimeString('hu-HU');
-  const time=document.createElement('span');time.className='time';time.textContent=now;
-  const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='›';
-  const user=document.createElement('span');user.className='user';user.textContent='Vendég';
-  const msg=document.createElement('span');msg.className='msgtext';msg.textContent=value;
-  row.append(time,arrow,user,msg);
-  const box=document.getElementById('chatMessages');box.append(row,document.createElement('br'));box.scrollTop=box.scrollHeight;input.value='';
+/* 1. A Supabase projekt URL-jét és publishable/anon kulcsát írd be ide. Ne használj service_role titkos kulcsot a böngészőben. */
+const SUPABASE_URL = "IDE_IRD_A_SUPABASE_PROJECT_URL_T";
+const SUPABASE_ANON_KEY = "IDE_IRD_A_SUPABASE_PUBLISHABLE_VAGY_ANON_KULCSOT";
+const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("IDE_IRD");
+const db = configured ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
+let currentUser=null, activeCategory="";
+const $=id=>document.getElementById(id);
+function status(id,msg){$(id).textContent=msg}
+function ready(){if(!db){$("connectionState").textContent="Nincs beállítva";status("authStatus","Előbb állítsd be a Supabase URL-t és publikus kulcsot az index.html-ben.");return false}return true}
+async function refreshSession(){
+ if(!ready())return;
+ const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
+ $("accountText").textContent=currentUser?("Belépve: "+(currentUser.email||"tag")):"Vendég";
+ $("logoutBtn").classList.toggle("hidden",!currentUser);
+ $("signupBtn").classList.toggle("hidden",!!currentUser);
+ $("loginBtn").classList.toggle("hidden",!!currentUser);
+ $("connectionState").textContent="Kapcsolódva";
 }
-function searchMovies(){
-  const q=document.getElementById('searchInput').value.trim().toLocaleLowerCase('hu');
-  document.querySelectorAll('#movieGrid .movie').forEach(card=>{card.style.display=card.innerText.toLocaleLowerCase('hu').includes(q)?'flex':'none';});
+$("signupBtn").onclick=async()=>{if(!ready())return;const email=$("email").value.trim(),password=$("password").value;if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");const {error}=await db.auth.signUp({email,password});status("authStatus",error?error.message:"Sikeres regisztrációs kérés. Nézd meg az e-mailjeidet, ha megerősítés szükséges.");};
+$("loginBtn").onclick=async()=>{if(!ready())return;const {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)return status("authStatus",error.message);currentUser=data.user;status("authStatus","Sikeres belépés.");await refreshSession();};
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();currentUser=null;await refreshSession();};
+$("searchForm").onsubmit=e=>{e.preventDefault();loadTorrents()};
+$("categories").onclick=e=>{const a=e.target.closest("[data-cat]");if(!a)return;e.preventDefault();activeCategory=a.dataset.cat;loadTorrents()};
+$("uploadForm").onsubmit=async e=>{
+ e.preventDefault();if(!ready())return;if(!currentUser)return status("uploadStatus","Feltöltéshez előbb jelentkezz be.");
+ const file=$("torrentFile").files[0];if(!file||!file.name.toLowerCase().endsWith(".torrent"))return status("uploadStatus","Csak .torrent fájl tölthető fel.");
+ if(file.size>10*1024*1024)return status("uploadStatus","A torrentfájl maximum 10 MB lehet.");
+ status("uploadStatus","Feltöltés folyamatban...");
+ const safeName=crypto.randomUUID()+".torrent",path=currentUser.id+"/"+safeName;
+ const up=await db.storage.from("torrent-files").upload(path,file,{contentType:"application/x-bittorrent",upsert:false});
+ if(up.error)return status("uploadStatus","Tárhelyhiba: "+up.error.message);
+ const ins=await db.from("torrents").insert({title:$("title").value.trim(),category:$("category").value,description:$("description").value.trim(),file_path:path,magnet_link:$("magnet").value.trim()||null,uploader_id:currentUser.id,approved:false});
+ if(ins.error){await db.storage.from("torrent-files").remove([path]);return status("uploadStatus","Adatbázishiba: "+ins.error.message);}
+ status("uploadStatus","A feltöltés beérkezett, admin jóváhagyásra vár.");$("uploadForm").reset();loadTorrents();loadStats();
+};
+async function loadTorrents(){
+ if(!ready())return;let q=db.from("torrents").select("id,title,category,description,file_path,magnet_link,created_at,uploader_id").eq("approved",true).order("created_at",{ascending:false}).limit(100);
+ if(activeCategory)q=q.eq("category",activeCategory);
+ const term=$("search").value.trim();if(term)q=q.ilike("title","%"+term.replace(/[%_]/g,"")+"%");
+ const {data,error}=await q;const body=$("torrentRows");body.innerHTML="";
+ if(error){body.innerHTML='<tr><td colspan="5" class="empty">Betöltési hiba: '+escapeHtml(error.message)+'</td></tr>';return}
+ if(!data?.length){body.innerHTML='<tr><td colspan="5" class="empty">Még nincs jóváhagyott torrent ebben a kategóriában.</td></tr>';return}
+ data.forEach(t=>{const tr=document.createElement("tr");const name=document.createElement("td");name.innerHTML='<div class="torrent-name">'+escapeHtml(t.title)+'</div><small>'+escapeHtml(t.description||"")+'</small>';
+ const cat=document.createElement("td");cat.textContent=t.category;const uploader=document.createElement("td");uploader.textContent=t.uploader_id.slice(0,8);
+ const date=document.createElement("td");date.textContent=new Date(t.created_at).toLocaleDateString("hu-HU");
+ const dl=document.createElement("td");if(t.magnet_link){const a=document.createElement("a");a.className="btn";a.href=t.magnet_link;a.textContent="Magnet";dl.append(a)}else{const a=document.createElement("button");a.textContent=".torrent";a.onclick=async()=>{const {data,error}=await db.storage.from("torrent-files").createSignedUrl(t.file_path,90);if(error)alert(error.message);else window.location.href=data.signedUrl};dl.append(a)}
+ tr.append(name,cat,uploader,date,dl);body.append(tr)});
 }
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("wallForm").onsubmit=async e=>{e.preventDefault();if(!ready())return;if(!currentUser)return status("wallStatus","Üzenetküldéshez jelentkezz be.");const message=$("wallText").value.trim();if(!message)return;const {error}=await db.from("wall_messages").insert({user_id:currentUser.id,message});if(error)return status("wallStatus",error.message);$("wallText").value="";status("wallStatus","Üzenet elküldve.");loadWall();loadStats()};
+async function loadWall(){if(!ready())return;const {data,error}=await db.from("wall_messages").select("message,created_at,user_id").order("created_at",{ascending:false}).limit(30);if(error){$("wallRows").textContent="Az üzenőfal még nincs beállítva.";return}$("wallRows").innerHTML="";(data||[]).forEach(m=>{const d=document.createElement("div");d.className="chatline";const b=document.createElement("b");b.textContent=m.user_id.slice(0,8);const s=document.createElement("span");s.textContent=new Date(m.created_at).toLocaleTimeString("hu-HU");d.append(b,document.createTextNode(m.message+" "),s);$("wallRows").append(d,document.createElement("br"))})}
+async function loadStats(){if(!ready())return;for(const [table,id] of [["torrents","torrentCount"],["wall_messages","wallCount"]]){const {count}=await db.from(table).select("*",{count:"exact",head:true});$(id).textContent=count??"—"}}
+async function init(){if(!ready())return;await refreshSession();await loadTorrents();await loadWall();await loadStats();db.auth.onAuthStateChange(async()=>{await refreshSession()});}
+init();
 </script>
-</body>
-</html>
+</body></html>
