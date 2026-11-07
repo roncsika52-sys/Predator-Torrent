@@ -92,14 +92,14 @@ footer{text-align:center;color:#777;padding:25px}
 <footer>Predator Torrent · Saját közösségi torrentkatalógus</footer>
 <script>
 /* 1. A Supabase projekt URL-jét és publishable/anon kulcsát írd be ide. Ne használj service_role titkos kulcsot a böngészőben. */
-const SUPABASE_URL = "IDE_IRD_A_SUPABASE_PROJECT_URL_T";
-const SUPABASE_ANON_KEY = "IDE_IRD_A_SUPABASE_PUBLISHABLE_VAGY_ANON_KULCSOT";
+const SUPABASE_URL = "https://tmcbfjpwzeafixchsbqt.supabase.co";
+const SUPABASE_ANON_KEY = "IDE_MASOLD_BE_A_PUBLISHABLE_KEY_T";
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("IDE_IRD");
 const db = configured ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
 let currentUser=null, activeCategory="";
 const $=id=>document.getElementById(id);
 function status(id,msg){$(id).textContent=msg}
-function ready(){if(!db){$("connectionState").textContent="Nincs beállítva";status("authStatus","Előbb állítsd be a Supabase URL-t és publikus kulcsot az index.html-ben.");return false}return true}
+function ready(){if(!db){$("connectionState").textContent="Nincs beállítva";status("authStatus","Még hiányzik a Supabase Publishable key az index.html 96. sorából.");return false}return true}
 async function refreshSession(){
  if(!ready())return;
  const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
