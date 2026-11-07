@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090606">
+<meta name="application-name" content="Predator Chat">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Predator Chat</title>
+<meta name="description" content="Predator Chat – magyar online közösségi chat.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #050507;
+  --panel: #08080b;
+  --panel2: #111116;
+  --red: #ff172d;
+  --red2: #b90820;
+  --text: #f8f8fb;
+  --muted: #a7a7b1;
+  --line: #5c101c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 0%,#2a0710,#09090c 44%,#030304);
+  color: var(--text);
+  font-family: Arial,Helvetica,sans-serif;
+}
+header {
+  min-height: 94px;
+  padding: 12px 22px;
+  background: linear-gradient(100deg,#09090b,#170308,#060607);
+  border-bottom: 2px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h1 { font-size: 28px; font-weight: 900; }
+button {
+  background: linear-gradient(135deg,#ff233c,#b90820);
+  border: 1px solid #ff3449;
+  color: white;
+  border-radius: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+input,select {
+  width: 100%;
+  padding: 12px;
+  background: #08080b;
+  color: white;
+  border: 1px solid #4a252d;
+  border-radius: 10px;
+}
+main {
+  width: 100%;
+  margin: auto;
+  padding: 12px 14px;
+}
+.panel {
+  background: linear-gradient(145deg,#111116,#08080b);
+  border: 1px solid #4d1722;
+  border-radius: 14px;
+  padding: 14px;
+}
+.hidden { display: none !important; }
+</style>
+</head>
