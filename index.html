@@ -93,7 +93,7 @@ footer{text-align:center;color:#777;padding:25px}
 <script>
 /* 1. A Supabase projekt URL-jét és publishable/anon kulcsát írd be ide. Ne használj service_role titkos kulcsot a böngészőben. */
 const SUPABASE_URL = "https://tmcbfjpwzeafixchsbqt.supabase.co";
-const SUPABASE_ANON_KEY = "IDE_MASOLD_BE_A_PUBLISHABLE_KEY_T";
+const SUPABASE_ANON_KEY = "const SUPABASE_ANON_KEY
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("IDE_IRD");
 const db = configured ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY) : null;
 let currentUser=null, activeCategory="";
