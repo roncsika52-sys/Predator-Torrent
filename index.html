@@ -3,44 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090909">
+<meta name="theme-color" content="#100b0b">
 <title>Predator Torrent</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
-header{background:#160609;border-bottom:2px solid #e00024;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:24px;font-weight:bold;color:#ff1838}nav{display:flex;gap:8px;flex-wrap:wrap}
-button{background:#bd001d;color:#fff;border:0;padding:11px 15px;border-radius:7px;cursor:pointer}
-button:hover{background:#e00024}main{max-width:1100px;margin:auto;padding:20px}
-.panel{background:#171717;border:1px solid #681020;border-radius:12px;padding:20px;margin-bottom:18px}
-h2{color:#ff1838}input,select{width:100%;padding:13px;margin:8px 0;background:#080808;color:#fff;border:1px solid #7a1728;border-radius:7px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
-.card{background:#101010;padding:18px;border:1px solid #4d1722;border-radius:10px}
-.hidden{display:none!important}a{color:#ff5067}footer{text-align:center;padding:25px;color:#aaa}.notice{color:#ffc0c8;font-size:14px}
+*{box-sizing:border-box}
+:root{--bg:#100d0c;--panel:#201c1a;--panel2:#292421;--line:#493a31;--red:#c51c2e;--orange:#f08a32;--text:#eee9e5;--muted:#aaa19a}
+body{margin:0;background:radial-gradient(circle at top,#30231c 0,#100d0c 55%);color:var(--text);font:15px Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#17110f;border-bottom:2px solid var(--red);padding:13px 4%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:23px;font-weight:800;color:#ff5365;letter-spacing:.5px}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+button{border:1px solid #77303a;background:#9e1426;color:white;padding:10px 14px;border-radius:6px;cursor:pointer;font-weight:bold}
+button:hover{background:#c51c2e}
+main{max-width:1450px;margin:18px auto;padding:0 16px}
+.layout{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(260px,.95fr);gap:16px;align-items:start}
+.panel{background:linear-gradient(135deg,#282321,#1b1817);border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:16px;box-shadow:0 5px 18px #0005}
+.panel-title{padding:11px 15px;background:repeating-linear-gradient(135deg,#302925,#302925 8px,#292320 8px,#292320 16px);border-bottom:1px solid var(--line);font-weight:bold;color:#e6dcd5}
+.panel-body{padding:15px}
+.chat-frame{display:block;width:100%;height:620px;border:0;background:#111}
+.stats{display:grid;grid-template-columns:1fr auto;gap:11px 10px}
+.stats strong{color:var(--orange);text-align:right}
+input,select{width:100%;padding:12px;margin:7px 0;background:#151211;color:white;border:1px solid #60443b;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.card{padding:16px;border:1px solid var(--line);border-radius:8px;background:#1a1716}
+.card h3{color:#ff6473;margin:0 0 8px}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);padding:24px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.chat-frame{height:68vh;min-height:440px}header{position:static}}
 </style>
 </head>
 <body>
-<header><div class="logo">🐺 PREDATOR TORRENT</div><nav>
-<button onclick="showPage('home')">Főoldal</button><button onclick="showPage('torrents')">Torrentek</button>
-<button onclick="showPage('upload')">Feltöltés</button><button onclick="showPage('chat')">Chat</button><button onclick="showPage('account')">Profil</button>
-</nav></header>
+<header>
+  <div class="logo">🐺 PREDATOR TORRENT</div>
+  <nav>
+    <button onclick="showPage('home')">Főoldal</button>
+    <button onclick="showPage('browse')">Torrentek</button>
+    <button onclick="showPage('upload')">Feltöltés</button>
+    <button onclick="showPage('community')">Közösség / Chat</button>
+  </nav>
+</header>
 <main>
-<section id="home"><div class="panel"><h1>Üdvözöl a Predator Torrent!</h1><p>Magyar közösségi oldal és élő chat.</p>
-<p class="notice">Csak saját vagy jogszerűen megosztható tartalmakat tölts fel.</p></div>
-<div class="panel"><h2>Tartalom keresése</h2><input id="homeSearch" placeholder="Mit keresel?"><button onclick="searchTorrents()">Keresés</button></div>
-<div class="grid"><div class="card"><h2>🎬 Filmek</h2><p>Jogtisztán megosztható filmek.</p></div>
-<div class="card"><h2>🎵 Zene</h2><p>Szabadon megosztható zenék.</p></div>
-<div class="card"><h2>💻 Programok</h2><p>Szabad szoftverek.</p></div><div class="card"><h2>💬 Közösség</h2><p>Beszélgess a tagokkal!</p></div></div></section>
-<section id="torrents" class="hidden"><div class="panel"><h2>Torrentek</h2><input id="torrentSearch" placeholder="Torrent keresése..." oninput="filterList()"><div id="torrentList"><p>Még nincsenek feltöltések.</p></div></div></section>
-<section id="upload" class="hidden"><div class="panel"><h2>Torrent feltöltése</h2><input id="torrentName" placeholder="Torrent neve">
-<select id="torrentCategory"><option>Film</option><option>Zene</option><option>Program</option><option>Egyéb</option></select>
-<input id="torrentLink" placeholder="Saját, jogszerűen megosztható magnet link"><button onclick="submitTorrent()">Beküldés</button>
-<p id="uploadMessage" class="notice"></p><p class="notice">A Supabase-adatbázis és az adminjóváhagyás még nincs beállítva.</p></div></section>
-<section id="chat" class="hidden"><div class="panel"><h2>🐺 Predator Chat</h2><p>A meglévő Predator Chat külön felületét ide kapcsoljuk.</p><a href="https://roncsika38.github.io/predator.Chat/">Predator Chat megnyitása</a></div></section>
-<section id="account" class="hidden"><div class="panel"><h2>Felhasználói profil</h2><p>A regisztráció és belépés Supabase-kapcsolatát később állítjuk be.</p></div></section>
-</main><footer>Predator Torrent © 2026</footer>
+<section id="home">
+  <div class="panel"><div class="panel-title">Üdvözlünk a Predator Torrent közösségben!</div>
+  <div class="panel-body"><h2>Magyar közösségi torrentoldal</h2><p>Jogtisztán megosztható fájlok és közösségi beszélgetés egy helyen.</p>
+  <p class="small">Kizárólag olyan tartalmat tölts fel, amelynek megosztására jogosult vagy.</p></div></div>
+  <div class="layout">
+    <div>
+      <div class="panel">
+        <div class="panel-title">Üzenőfal – Predator Chat</div>
+        <iframe class="chat-frame" src="https://roncsika38.github.io/predator.Chat/" title="Predator Chat" loading="lazy"></iframe>
+      </div>
+      <div class="panel"><div class="panel-title">Kategóriák</div><div class="panel-body cards">
+        <div class="card"><h3>🎬 Filmek</h3><span class="small">Jogtisztán megosztható filmek</span></div>
+        <div class="card"><h3>🎵 Zene</h3><span class="small">Szabadon megosztható zenék</span></div>
+        <div class="card"><h3>💻 Programok</h3><span class="small">Szabad szoftverek</span></div>
+        <div class="card"><h3>📚 Egyéb</h3><span class="small">Közösségi feltöltések</span></div>
+      </div></div>
+    </div>
+    <aside>
+      <div class="panel"><div class="panel-title">Statisztika</div><div class="panel-body stats">
+        <span>Regisztrált tagok</span><strong>—</strong>
+        <span>Online felhasználók</span><strong>—</strong>
+        <span>Torrentek száma</span><strong>—</strong>
+        <span>Mai feltöltések</span><strong>—</strong>
+        <span>Chat</span><strong>Élő felület</strong>
+      </div></div>
+      <div class="panel"><div class="panel-title">Keresés</div><div class="panel-body">
+        <input id="search" placeholder="Keresés a torrentek között">
+        <button onclick="showPage('browse')">Keresés</button>
+      </div></div>
+      <div class="panel"><div class="panel-title">Hasznos</div><div class="panel-body">
+        <p><a href="https://roncsika38.github.io/predator.Chat/" target="_blank" rel="noopener" style="color:#ff8794">Predator Chat megnyitása külön ablakban</a></p>
+        <p class="small">Ha a chat nem jelenik meg a keretben, a fenti külön linkkel nyitható meg.</p>
+      </div></div>
+    </aside>
+  </div>
+</section>
+<section id="browse" class="hidden"><div class="panel"><div class="panel-title">Torrentek</div><div class="panel-body"><input placeholder="Torrent keresése"><p>Még nincsenek torrentek csatlakoztatva. A valódi lista adatbázis-integrációt igényel.</p></div></div></section>
+<section id="upload" class="hidden"><div class="panel"><div class="panel-title">Feltöltés</div><div class="panel-body"><input placeholder="Fájl vagy torrent neve"><select><option>Film</option><option>Zene</option><option>Program</option><option>Egyéb</option></select><input placeholder="Saját, jogszerűen megosztható magnet link"><p class="small">A feltöltés mentése és moderálása még nincs adatbázishoz kötve.</p></div></div></section>
+<section id="community" class="hidden"><div class="panel"><div class="panel-title">Predator Chat</div><iframe class="chat-frame" src="https://roncsika38.github.io/predator.Chat/" title="Predator Chat"></iframe></div></section>
+</main>
+<footer>Predator Torrent © 2026</footer>
 <script>
-function showPage(id){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
-function searchTorrents(){const q=document.getElementById('homeSearch').value.trim();showPage('torrents');document.getElementById('torrentSearch').value=q;filterList()}
-function filterList(){document.getElementById('torrentList').innerHTML='<p>'+(document.getElementById('torrentSearch').value.trim()?'Nincs találat. Az adatbázis még nincs csatlakoztatva.':'Még nincsenek feltöltések.')+'</p>'}
-function submitTorrent(){const n=document.getElementById('torrentName').value.trim(),l=document.getElementById('torrentLink').value.trim(),m=document.getElementById('uploadMessage');if(!n||!l){m.textContent='Töltsd ki a nevet és a magnet linket!';return}if(!/^magnet:\?/.test(l)){m.textContent='Érvényes magnet linket adj meg!';return}m.textContent='Az űrlap elkészült, de az adatbázis és az adminjóváhagyás még nincs bekötve.'}
-</script></body></html>
+function showPage(id){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0)}
+</script>
+</body>
+</html>
