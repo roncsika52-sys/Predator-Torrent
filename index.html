@@ -1,4 +1,3 @@
-```
 <!doctype html>
 <html lang="hu">
 <head>
@@ -8,291 +7,739 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--red:#e32636;--bg:#111114;--panel:#202024;--line:#3b3b42;--muted:#aaa;--orange:#ff922e}
-*{box-sizing:border-box}body{margin:0;background:#111114;color:#eee;font:14px Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#111114;color:#eee;font:14px Arial,sans-serif}
 header{background:#080809;border-bottom:3px solid var(--red);padding:17px max(16px,calc((100% - 1360px)/2));display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.logo{font-size:24px;font-weight:900;letter-spacing:2px;color:var(--red);white-space:nowrap}.logo span{color:#fff}
-.search{display:flex;flex:1;min-width:210px}.search input{flex:1;min-width:0}
+.logo{font-size:24px;font-weight:900;letter-spacing:2px;color:var(--red);white-space:nowrap}
+.logo span{color:#fff}
+.search{display:flex;flex:1;min-width:210px}
+.search input{flex:1;min-width:0}
 input,textarea,select{background:#303036;border:1px solid #4a4a52;color:#fff;border-radius:5px;padding:10px;font:inherit}
 button,.btn{border:0;background:var(--red);color:#fff;border-radius:5px;padding:10px 13px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
-button.secondary,.btn.secondary{background:#45454d}button:disabled{opacity:.5;cursor:not-allowed}
-.account{margin-left:auto;color:#ccc}.nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;background:#1b1b1f;padding:9px}.nav a{color:#ddd;padding:10px 13px;text-decoration:none;border-radius:5px}.nav a:hover{background:#3c2024}
+button.secondary,.btn.secondary{background:#45454d}
+button:disabled{opacity:.5;cursor:not-allowed}
+.account{margin-left:auto;color:#ccc}
+.nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;background:#1b1b1f;padding:9px}
+.nav a{color:#ddd;padding:10px 13px;text-decoration:none;border-radius:5px}
+.nav a:hover{background:#3c2024}
 .layout{max-width:1360px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:210px minmax(0,1fr) 280px;gap:15px}
 .panel{background:linear-gradient(145deg,#242428,#1b1b1f);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:14px}
-.ph{padding:12px 14px;background:repeating-linear-gradient(135deg,#2b2b30,#2b2b30 8px,#252529 8px,#252529 16px);border-bottom:1px solid #444;font-weight:bold}.pb{padding:13px}
-.side a{display:block;padding:10px 7px;color:#ddd;text-decoration:none;border-bottom:1px solid #37373d}.side a:hover{color:#ff9b46}
+.ph{padding:12px 14px;background:repeating-linear-gradient(135deg,#2b2b30,#2b2b30 8px,#252529 8px,#252529 16px);border-bottom:1px solid #444;font-weight:bold}
+.pb{padding:13px}
+.side a{display:block;padding:10px 7px;color:#ddd;text-decoration:none;border-bottom:1px solid #37373d}
+.side a:hover{color:#ff9b46}
 .notice{padding:13px;text-align:center;background:#292326;border:1px solid #57343a;border-radius:7px;margin-bottom:14px;line-height:1.5}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}
-.chatlog{height:250px;overflow:auto;padding:12px;background:#1b1b1f}.chatline{padding:8px 10px;border:1px solid #38383e;border-radius:20px;display:inline-block;margin:5px 0;max-width:100%;overflow-wrap:anywhere}.chatline b{color:#4ac45a;margin:0 6px}.chatline span{color:var(--orange)}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #393940;vertical-align:top}th{color:#ffad62;font-size:12px}td{font-size:13px}td small{color:#aaa}.torrent-name{font-weight:bold;color:#fff}.empty{color:#aaa;text-align:center;padding:20px}
-.stat{display:flex;justify-content:space-between;padding:7px 2px;border-bottom:1px solid #37373d}.stat b{color:var(--orange)}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formgrid .wide{grid-column:1/-1}
-label{display:block;color:#ccc;font-size:12px;margin-bottom:5px}.field input,.field textarea,.field select{width:100%}
-.hidden{display:none!important}.status{font-size:12px;color:#ffb46a;min-height:18px;margin-top:8px}.muted{color:#aaa;font-size:12px;line-height:1.5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.chatlog{height:250px;overflow:auto;padding:12px;background:#1b1b1f}
+.chatline{padding:8px 10px;border:1px solid #38383e;border-radius:20px;display:inline-block;margin:5px 0;max-width:100%;overflow-wrap:anywhere}
+.chatline b{color:#4ac45a;margin:0 6px}
+.chatline span{color:var(--orange)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #393940;vertical-align:top}
+th{color:#ffad62;font-size:12px}
+td{font-size:13px}
+td small{color:#aaa}
+.torrent-name{font-weight:bold;color:#fff}
+.empty{color:#aaa;text-align:center;padding:20px}
+.stat{display:flex;justify-content:space-between;padding:7px 2px;border-bottom:1px solid #37373d}
+.stat b{color:var(--orange)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.formgrid .wide{grid-column:1/-1}
+label{display:block;color:#ccc;font-size:12px;margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%}
+.hidden{display:none!important}
+.status{font-size:12px;color:#ffb46a;min-height:18px;margin-top:8px}
+.muted{color:#aaa;font-size:12px;line-height:1.5}
 footer{text-align:center;color:#777;padding:25px}
-@media(max-width:980px){.layout{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px}}
-@media(max-width:680px){header{padding:14px}.layout{display:flex;flex-direction:column}.layout>*{width:100%}.right{display:block}.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}table{font-size:12px}th,td{padding:8px 5px}.account{margin-left:0}.logo{font-size:21px}}
+@media(max-width:980px){
+.layout{grid-template-columns:190px minmax(0,1fr)}
+.right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+}
+@media(max-width:680px){
+header{padding:14px}
+.layout{display:flex;flex-direction:column}
+.layout>*{width:100%}
+.right{display:block}
+.formgrid{grid-template-columns:1fr}
+.formgrid .wide{grid-column:auto}
+table{font-size:12px}
+th,td{padding:8px 5px}
+.account{margin-left:0}
+.logo{font-size:21px}
+}
 </style>
 </head>
 <body>
+
 <header>
-  <a class="logo" href="#">PREDATOR <span>TORRENT</span></a>
-  <form class="search" id="searchForm"><input id="search" placeholder="Torrent keresése..."><button>Keresés</button></form>
-  <div class="account" id="accountText">Vendég</div>
+<a class="logo" href="#">PREDATOR <span>TORRENT</span></a>
+<form class="search" id="searchForm">
+<input id="search" placeholder="Torrent keresése...">
+<button>Keresés</button>
+</form>
+<div class="account" id="accountText">Vendég</div>
 </header>
+
 <nav class="nav">
-  <a href="#torrents">Főoldal / Torrentek</a><a href="#upload">Feltöltés</a><a href="#wall">Üzenőfal</a><a href="#stats">Statisztika</a><a href="#auth">Fiók</a>
+<a href="#torrents">Főoldal / Torrentek</a>
+<a href="#upload">Feltöltés</a>
+<a href="#wall">Üzenőfal</a>
+<a href="#stats">Statisztika</a>
+<a href="#auth">Fiók</a>
 </nav>
+
 <div class="layout">
+
 <aside class="left">
- <section class="panel"><div class="ph">Kategóriák</div><div class="pb side" id="categories">
-  <a href="#" data-cat="">Összes torrent</a><a href="#" data-cat="Film">Filmek</a><a href="#" data-cat="Sorozat">Sorozatok</a><a href="#" data-cat="Dokumentum">Dokumentumfilmek</a><a href="#" data-cat="Animáció">Animáció</a><a href="#" data-cat="Egyéb">Egyéb</a>
- </div></section>
- <section class="panel"><div class="ph">Fiók</div><div class="pb muted">Feltöltéshez és hozzászóláshoz be kell jelentkezned. Csak olyan fájlt ossz meg, amelynek terjesztésére jogosult vagy.</div></section>
+<section class="panel">
+<div class="ph">Kategóriák</div>
+<div class="pb side" id="categories">
+<a href="#" data-cat="">Összes torrent</a>
+<a href="#" data-cat="Film">Filmek</a>
+<a href="#" data-cat="Sorozat">Sorozatok</a>
+<a href="#" data-cat="Dokumentum">Dokumentumfilmek</a>
+<a href="#" data-cat="Animáció">Animáció</a>
+<a href="#" data-cat="Egyéb">Egyéb</a>
+</div>
+</section>
+<section class="panel">
+<div class="ph">Fiók</div>
+<div class="pb muted">
+Feltöltéshez és hozzászóláshoz be kell jelentkezned.
+Csak olyan fájlt ossz meg, amelynek terjesztésére jogosult vagy.
+</div>
+</section>
 </aside>
+
 <main class="center">
- <div class="notice"><b>Üdvözöl a Predator Torrent!</b><br>Valódi közösségi torrentkatalógus – saját feltöltésekkel, kereséssel és letölthető torrentfájlokkal.</div>
- <section class="panel" id="auth"><div class="ph">Regisztráció / Belépés</div><div class="pb">
-  <div class="formgrid">
-   <div class="field"><label>E-mail cím</label><input id="email" type="email" autocomplete="email" placeholder="email@example.com"></div>
-   <div class="field"><label>Jelszó</label><input id="password" type="password" autocomplete="current-password" placeholder="Legalább 8 karakter"></div>
-  </div>
-  <div class="row" style="margin-top:10px"><button id="signupBtn">Regisztráció</button><button class="secondary" id="loginBtn">Belépés</button><button class="secondary hidden" id="logoutBtn">Kilépés</button></div>
-  <div class="status" id="authStatus"></div>
-  <p class="muted">A regisztráció után a Supabase beállításától függően e-mailes megerősítés szükséges lehet.</p>
- </div></section>
- <section class="panel" id="upload"><div class="ph">Torrent feltöltése</div><div class="pb">
-  <form id="uploadForm" class="formgrid">
-   <div class="field"><label>Film / torrent címe</label><input id="title" required maxlength="120"></div>
-   <div class="field"><label>Kategória</label><select id="category"><option>Film</option><option>Sorozat</option><option>Dokumentum</option><option>Animáció</option><option>Egyéb</option></select></div>
-   <div class="field wide"><label>Leírás</label><textarea id="description" rows="2" maxlength="1200"></textarea></div>
-   <div class="field"><label>Filmfájl (.mp4 vagy .mkv)</label><input id="videoFile" type="file" accept=".mp4,.mkv,video/mp4,video/x-matroska"></div>
-   <div class="field"><label>.torrent fájl (opcionális)</label><input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent"></div>
-   <div class="field"><label>Magnet link (ha van)</label><input id="magnet" type="url" placeholder="magnet:?xt=..."></div>
-   <div class="field wide"><label><input id="rights" type="checkbox" required style="width:auto"> Kijelentem, hogy jogosult vagyok ezt a tartalmat megosztani.</label></div>
-   <div class="wide"><button type="submit">Feltöltés elküldése</button><div class="status" id="uploadStatus"></div></div>
-  </form>
-  <p class="muted">Filmfájl és .torrent fájl is feltölthető. Legalább egyet válassz. Filmfájl: legfeljebb 100 MB ebben az alapverzióban. Csak olyan videót tölts fel, amelynek megosztására jogosult vagy. A feltöltött film admin jóváhagyás után jelenik meg.</p>
- </div></section>
- <section class="panel hidden" id="adminPanel"><div class="ph">Admin felület – feltöltések jóváhagyása</div><div class="pb">
- <div class="muted">Itt jelennek meg a jóváhagyásra váró, jogszerűen megosztható feltöltések.</div>
- <div class="status" id="adminStatus"></div>
- <div id="pendingRows" class="muted" style="margin-top:10px">Várakozó feltöltések betöltése...</div>
-</div></section>
-<section class="panel" id="torrents"><div class="ph">Torrentek</div><div class="pb" style="padding:0;overflow-x:auto">
-  <table><thead><tr><th>Név / leírás</th><th>Kategória</th><th>Feltöltő</th><th>Dátum</th><th>Letöltés</th></tr></thead><tbody id="torrentRows"><tr><td colspan="5" class="empty">Torrentek betöltése...</td></tr></tbody></table>
- </div></section>
- <section class="panel" id="wall"><div class="ph">Üzenőfal</div><div class="pb">
-  <form id="wallForm" class="row"><input id="wallText" maxlength="500" placeholder="Írd be az üzeneted..." required><button>Küldés</button></form>
-  <div class="status" id="wallStatus"></div><div id="wallRows" class="muted" style="margin-top:10px">Üzenetek betöltése...</div>
- </div></section>
+
+<div class="notice">
+<b>Üdvözöl a Predator Torrent!</b><br>
+Valódi közösségi torrentkatalógus – saját feltöltésekkel, kereséssel és letölthető torrentfájlokkal.
+</div>
+
+<section class="panel" id="auth">
+<div class="ph">Regisztráció / Belépés</div>
+<div class="pb">
+<div class="formgrid">
+<div class="field">
+<label>E-mail cím</label>
+<input id="email" type="email" autocomplete="email" placeholder="email@example.com">
+</div>
+<div class="field">
+<label>Jelszó</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Legalább 8 karakter">
+</div>
+</div>
+<div class="row" style="margin-top:10px">
+<button id="signupBtn">Regisztráció</button>
+<button class="secondary" id="loginBtn">Belépés</button>
+<button class="secondary hidden" id="logoutBtn">Kilépés</button>
+</div>
+<div class="status" id="authStatus"></div>
+<p class="muted">A regisztráció után a Supabase beállításától függően e-mailes megerősítés szükséges lehet.</p>
+</div>
+</section>
+
+<section class="panel" id="upload">
+<div class="ph">Torrent feltöltése</div>
+<div class="pb">
+<form id="uploadForm" class="formgrid">
+
+<div class="field">
+<label>Film / torrent címe</label>
+<input id="title" required maxlength="120">
+</div>
+
+<div class="field">
+<label>Kategória</label>
+<select id="category">
+<option>Film</option>
+<option>Sorozat</option>
+<option>Dokumentum</option>
+<option>Animáció</option>
+<option>Egyéb</option>
+</select>
+</div>
+
+<div class="field wide">
+<label>Leírás</label>
+<textarea id="description" rows="2" maxlength="1200"></textarea>
+</div>
+
+<div class="field">
+<label>Filmfájl (.mp4 vagy .mkv)</label>
+<input id="videoFile" type="file" accept=".mp4,.mkv,video/mp4,video/x-matroska">
+</div>
+
+<div class="field">
+<label>.torrent fájl (opcionális)</label>
+<input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent">
+</div>
+
+<div class="field">
+<label>Magnet link (ha van)</label>
+<input id="magnet" type="url" placeholder="magnet:?xt=...">
+</div>
+
+<div class="field wide">
+<label>
+<input id="rights" type="checkbox" required style="width:auto">
+Kijelentem, hogy jogosult vagyok ezt a tartalmat megosztani.
+</label>
+</div>
+
+<div class="wide">
+<button type="submit">Feltöltés elküldése</button>
+<div class="status" id="uploadStatus"></div>
+</div>
+
+</form>
+<p class="muted">
+Filmfájl és .torrent fájl is feltölthető. Legalább egyet válassz.
+Filmfájl: legfeljebb 100 MB ebben az alapverzióban.
+Csak olyan videót tölts fel, amelynek megosztására jogosult vagy.
+A feltöltött film admin jóváhagyás után jelenik meg.
+</p>
+</div>
+</section>
+
+<section class="panel hidden" id="adminPanel">
+<div class="ph">Admin felület – feltöltések jóváhagyása</div>
+<div class="pb">
+<div class="muted">Itt jelennek meg a jóváhagyásra váró, jogszerűen megosztható feltöltések.</div>
+<div class="status" id="adminStatus"></div>
+<div id="pendingRows" class="muted" style="margin-top:10px">Várakozó feltöltések betöltése...</div>
+</div>
+</section>
+
+<section class="panel" id="torrents">
+<div class="ph">Torrentek</div>
+<div class="pb" style="padding:0;overflow-x:auto">
+<table>
+<thead>
+<tr>
+<th>Név / leírás</th>
+<th>Kategória</th>
+<th>Feltöltő</th>
+<th>Dátum</th>
+<th>Letöltés</th>
+</tr>
+</thead>
+<tbody id="torrentRows">
+<tr><td colspan="5" class="empty">Torrentek betöltése...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="panel" id="wall">
+<div class="ph">Üzenőfal</div>
+<div class="pb">
+<form id="wallForm" class="row">
+<input id="wallText" maxlength="500" placeholder="Írd be az üzeneted..." required>
+<button>Küldés</button>
+</form>
+<div class="status" id="wallStatus"></div>
+<div id="wallRows" class="muted" style="margin-top:10px">Üzenetek betöltése...</div>
+</div>
+</section>
+
 </main>
+
 <aside class="right">
- <section class="panel" id="stats"><div class="ph">Statisztika</div><div class="pb">
-  <div class="stat"><span>Regisztrált tagok</span><b id="memberCount">—</b></div>
-  <div class="stat"><span>Torrentek száma</span><b id="torrentCount">—</b></div>
-  <div class="stat"><span>Üzenetek</span><b id="wallCount">—</b></div>
-  <div class="stat"><span>Oldal állapota</span><b id="connectionState">Kapcsolódás</b></div>
- </div></section>
- <section class="panel"><div class="ph">Fontos tudnivaló</div><div class="pb muted">A Predator Torrent önálló rendszer. Más oldal privát szerveréhez vagy adatbázisához nem csatlakozik. Jogvédett tartalom engedély nélküli terjesztését nem támogatja.</div></section>
+<section class="panel" id="stats">
+<div class="ph">Statisztika</div>
+<div class="pb">
+<div class="stat"><span>Regisztrált tagok</span><b id="memberCount">—</b></div>
+<div class="stat"><span>Torrentek száma</span><b id="torrentCount">—</b></div>
+<div class="stat"><span>Üzenetek</span><b id="wallCount">—</b></div>
+<div class="stat"><span>Oldal állapota</span><b id="connectionState">Kapcsolódás</b></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="ph">Fontos tudnivaló</div>
+<div class="pb muted">
+A Predator Torrent önálló rendszer.
+Más oldal privát szerveréhez vagy adatbázisához nem csatlakozik.
+Jogvédett tartalom engedély nélküli terjesztését nem támogatja.
+</div>
+</section>
 </aside>
 </div>
+
 <footer>Predator Torrent · Saját közösségi torrentkatalógus</footer>
+
 <script>
-/* 1. A Supabase projekt URL-jét és publishable/anon kulcsát írd be ide. Ne használj service_role titkos kulcsot a böngészőben. */
 const SUPABASE_URL = "https://tmcbfjpwzeafixchsbqt.supabase.co";
-// IDE másold be a Supabase Settings > API Keys oldalon található Publishable key TELJES értékét.
-// Ne a Secret key-t használd, és a kulcsot ne illeszd be SQL Editorba.
 const SUPABASE_ANON_KEY = "sb_publishable_qRH3wqaMjDd0gPdvvzElBw_luhhqZLP";
 
 const hasRealKey =
-  SUPABASE_ANON_KEY.startsWith("sb_publishable_") &&
-  SUPABASE_ANON_KEY.length > 30;
+SUPABASE_ANON_KEY.startsWith("sb_publishable_") &&
+SUPABASE_ANON_KEY.length > 30;
 
 const configured =
-  SUPABASE_URL.startsWith("https://") &&
-  hasRealKey &&
-  window.supabase &&
-  typeof window.supabase.createClient === "function";
+SUPABASE_URL.startsWith("https://") &&
+hasRealKey &&
+window.supabase &&
+typeof window.supabase.createClient === "function";
 
 const db = configured
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
-let currentUser=null, activeCategory="";
+? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
+: null;
+
+let currentUser=null,activeCategory="";
 const $=id=>document.getElementById(id);
+
 function status(id,msg){$(id).textContent=msg}
+
 function ready(){
-  if(!db){
-    $("connectionState").textContent = "Nincs beállítva";
-    status("authStatus", "Hiányzik vagy hibás a Publishable key. A GitHub index.html fájlban a SUPABASE_ANON_KEY idézőjelei közé illeszd be a teljes, sb_publishable_ kezdetű kulcsot.");
-    return false;
-  }
-  return true;
+if(!db){
+$("connectionState").textContent="Nincs beállítva";
+status("authStatus","Hiányzik vagy hibás a Supabase Publishable key.");
+return false;
 }
+return true;
+}
+
 async function refreshSession(){
- if(!ready())return;
- const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
- $("accountText").textContent=currentUser?("Belépve: "+(currentUser.email||"tag")):"Vendég";
- $("logoutBtn").classList.toggle("hidden",!currentUser);
- $("signupBtn").classList.toggle("hidden",!!currentUser);
- $("loginBtn").classList.toggle("hidden",!!currentUser);
- $("connectionState").textContent="Kapcsolódva";
- await checkAdmin();
+if(!ready())return;
+const {data}=await db.auth.getSession();
+currentUser=data.session?.user||null;
+
+$("accountText").textContent=currentUser
+?("Belépve: "+(currentUser.email||"tag"))
+:"Vendég";
+
+$("logoutBtn").classList.toggle("hidden",!currentUser);
+$("signupBtn").classList.toggle("hidden",!!currentUser);
+$("loginBtn").classList.toggle("hidden",!!currentUser);
+$("connectionState").textContent="Kapcsolódva";
+
+await checkAdmin();
 }
+
 $("signupBtn").onclick=async()=>{
-  if(!ready())return;
-  const email=$("email").value.trim(), password=$("password").value;
-  if(!email)return status("authStatus","Írd be az e-mail-címedet.");
-  if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");
-  status("authStatus","Regisztráció folyamatban...");
-  try {
-    const {error}=await db.auth.signUp({email,password});
-    status("authStatus",error ? error.message : "A regisztrációs kérés sikerült. Ha e-mailes megerősítés szükséges, nézd meg a postaládádat.");
-  } catch(err) {
-    status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
-  }
+if(!ready())return;
+
+const email=$("email").value.trim();
+const password=$("password").value;
+
+if(!email)return status("authStatus","Írd be az e-mail-címedet.");
+if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");
+
+status("authStatus","Regisztráció folyamatban...");
+
+try{
+const {error}=await db.auth.signUp({email,password});
+status("authStatus",error?error.message:"A regisztrációs kérés sikerült. Ha e-mailes megerősítés szükséges, nézd meg a postaládádat.");
+}catch(err){
+status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
+}
 };
+
 $("loginBtn").onclick=async()=>{
-  if(!ready())return;
-  const email=$("email").value.trim(), password=$("password").value;
-  if(!email || !password)return status("authStatus","Add meg az e-mail-címedet és a jelszavadat.");
-  status("authStatus","Belépés folyamatban...");
-  try {
-    const {data,error}=await db.auth.signInWithPassword({email,password});
-    if(error)return status("authStatus",error.message);
-    currentUser=data.user;
-    status("authStatus","Sikeres belépés.");
-    await refreshSession();
-  } catch(err) {
-    status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
-  }
+if(!ready())return;
+
+const email=$("email").value.trim();
+const password=$("password").value;
+
+if(!email||!password)return status("authStatus","Add meg az e-mail-címedet és a jelszavadat.");
+
+status("authStatus","Belépés folyamatban...");
+
+try{
+const {data,error}=await db.auth.signInWithPassword({email,password});
+if(error)return status("authStatus",error.message);
+
+currentUser=data.user;
+status("authStatus","Sikeres belépés.");
+await refreshSession();
+}catch(err){
+status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
+}
 };
-$("logoutBtn").onclick=async()=>{await db.auth.signOut();currentUser=null;await refreshSession();};
-$("searchForm").onsubmit=e=>{e.preventDefault();loadTorrents()};
-$("categories").onclick=e=>{const a=e.target.closest("[data-cat]");if(!a)return;e.preventDefault();activeCategory=a.dataset.cat;loadTorrents()};
+
+$("logoutBtn").onclick=async()=>{
+await db.auth.signOut();
+currentUser=null;
+await refreshSession();
+};
+
+$("searchForm").onsubmit=e=>{
+e.preventDefault();
+loadTorrents();
+};
+
+$("categories").onclick=e=>{
+const a=e.target.closest("[data-cat]");
+if(!a)return;
+e.preventDefault();
+activeCategory=a.dataset.cat;
+loadTorrents();
+};
+
 async function checkAdmin(){
- const panel=$("adminPanel");
- if(!currentUser){panel.classList.add("hidden");return}
- const {data,error}=await db.from("site_admins").select("user_id").eq("user_id",currentUser.id).maybeSingle();
- if(error){panel.classList.add("hidden");return}
- const isAdmin=!!data;
- panel.classList.toggle("hidden",!isAdmin);
- if(isAdmin)await loadPendingTorrents();
+const panel=$("adminPanel");
+
+if(!currentUser){
+panel.classList.add("hidden");
+return;
 }
+
+const {data,error}=await db.from("site_admins")
+.select("user_id")
+.eq("user_id",currentUser.id)
+.maybeSingle();
+
+if(error){
+panel.classList.add("hidden");
+return;
+}
+
+const isAdmin=!!data;
+panel.classList.toggle("hidden",!isAdmin);
+
+if(isAdmin)await loadPendingTorrents();
+}
+
 async function loadPendingTorrents(){
- const host=$("pendingRows");
- host.textContent="Várakozó feltöltések betöltése...";
- const {data,error}=await db.from("torrents")
-   .select("id,title,category,description,created_at,uploader_id,video_path,file_path")
-   .eq("approved",false).order("created_at",{ascending:true}).limit(100);
- if(error){host.textContent="Admin lista hiba: "+error.message;return}
- if(!data?.length){host.textContent="Nincs jóváhagyásra váró feltöltés.";return}
- host.innerHTML="";
- data.forEach(t=>{
-   const item=document.createElement("div");
-   item.style.cssText="border:1px solid #444;padding:12px;border-radius:8px;margin-top:8px";
-   const title=document.createElement("b");title.textContent=t.title+" ("+t.category+")";
-   const desc=document.createElement("p");desc.textContent=t.description||"Nincs leírás";
-   const meta=document.createElement("small");meta.textContent=(t.video_path?"Videófájl ":"")+(t.file_path?".torrent fájl":"");
-   const approve=document.createElement("button");approve.textContent="Jóváhagyás";
-   approve.onclick=async()=>{
-     approve.disabled=true;
-     const {error:upErr}=await db.from("torrents").update({approved:true}).eq("id",t.id);
-     if(upErr){status("adminStatus","Jóváhagyási hiba: "+upErr.message);approve.disabled=false;return}
-     status("adminStatus","A feltöltés jóváhagyva.");
-     await loadPendingTorrents();await loadTorrents();await loadStats();
-   };
-   const reject=document.createElement("button");reject.className="secondary";reject.style.marginLeft="8px";reject.textContent="Elutasítás";
-   reject.onclick=async()=>{
-     if(!confirm("Biztosan elutasítod ezt a feltöltést?"))return;
-     const {error:delErr}=await db.from("torrents").delete().eq("id",t.id);
-     if(delErr){status("adminStatus","Elutasítási hiba: "+delErr.message);return}
-     status("adminStatus","A feltöltés elutasítva.");await loadPendingTorrents();
-   };
-   item.append(title,desc,meta,document.createElement("br"),approve,reject);
-   host.append(item);
- });
+const host=$("pendingRows");
+host.textContent="Várakozó feltöltések betöltése...";
+
+const {data,error}=await db.from("torrents")
+.select("id,title,category,description,created_at,uploader_id,video_path,file_path")
+.eq("approved",false)
+.order("created_at",{ascending:true})
+.limit(100);
+
+if(error){
+host.textContent="Admin lista hiba: "+error.message;
+return;
 }
-$("uploadForm").onsubmit=async e=>{
- e.preventDefault();
- if(!ready())return;
- if(!currentUser)return status("uploadStatus","Feltöltéshez előbb jelentkezz be.");
- const torrentFile=$("torrentFile").files[0];
- const videoFile=$("videoFile").files[0];
- if(!torrentFile && !videoFile)return status("uploadStatus","Válassz ki egy filmfájlt vagy egy .torrent fájlt.");
- if(torrentFile && !torrentFile.name.toLowerCase().endsWith(".torrent"))return status("uploadStatus","A torrent mezőbe csak .torrent fájl választható.");
- if(torrentFile && torrentFile.size>10*1024*1024)return status("uploadStatus","A .torrent fájl maximum 10 MB lehet.");
- if(videoFile){
-   const ext=videoFile.name.toLowerCase().split(".").pop();
-   if(!["mp4","mkv"].includes(ext))return status("uploadStatus","A filmfájl csak MP4 vagy MKV lehet.");
-   if(videoFile.size>100*1024*1024)return status("uploadStatus","A filmfájl maximum 100 MB lehet ebben a verzióban.");
- }
- status("uploadStatus","Feltöltés folyamatban...");
- let torrentPath=null, videoPath=null;
- if(torrentFile){
-   torrentPath=currentUser.id+"/"+crypto.randomUUID()+".torrent";
-   const up=await db.storage.from("torrent-files").upload(torrentPath,torrentFile,{contentType:"application/x-bittorrent",upsert:false});
-   if(up.error)return status("uploadStatus","Torrent tárhelyhiba: "+up.error.message);
- }
- if(videoFile){
-   const ext=videoFile.name.toLowerCase().split(".").pop();
-   videoPath=currentUser.id+"/"+crypto.randomUUID()+"."+ext;
-   const mime=ext==="mp4"?"video/mp4":"video/x-matroska";
-   const up=await db.storage.from("video-files").upload(videoPath,videoFile,{contentType:mime,upsert:false});
-   if(up.error){
-     if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
-     return status("uploadStatus","Film tárhelyhiba: "+up.error.message+" – ellenőrizd, hogy létrehoztad-e a video-files bucketet és lefuttattad-e a migrációs SQL-t.");
-   }
- }
- const ins=await db.from("torrents").insert({
-   title:$("title").value.trim(),
-   category:$("category").value,
-   description:$("description").value.trim(),
-   file_path:torrentPath,
-   video_path:videoPath,
-   magnet_link:$("magnet").value.trim()||null,
-   uploader_id:currentUser.id,
-   approved:false
- });
- if(ins.error){
-   if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
-   if(videoPath)await db.storage.from("video-files").remove([videoPath]);
-   return status("uploadStatus","Adatbázishiba: "+ins.error.message+" – előbb futtasd le a video-migration SQL-t.");
- }
- status("uploadStatus","A feltöltés beérkezett, admin jóváhagyásra vár.");
- $("uploadForm").reset();
- loadTorrents();loadStats();
+
+if(!data?.length){
+host.textContent="Nincs jóváhagyásra váró feltöltés.";
+return;
+}
+
+host.innerHTML="";
+
+data.forEach(t=>{
+const item=document.createElement("div");
+item.style.cssText="border:1px solid #444;padding:12px;border-radius:8px;margin-top:8px";
+
+const title=document.createElement("b");
+title.textContent=t.title+" ("+t.category+")";
+
+const desc=document.createElement("p");
+desc.textContent=t.description||"Nincs leírás";
+
+const meta=document.createElement("small");
+meta.textContent=(t.video_path?"Videófájl ":"")+(t.file_path?".torrent fájl":"");
+
+const approve=document.createElement("button");
+approve.textContent="Jóváhagyás";
+
+approve.onclick=async()=>{
+approve.disabled=true;
+const {error:upErr}=await db.from("torrents")
+.update({approved:true}).eq("id",t.id);
+
+if(upErr){
+status("adminStatus","Jóváhagyási hiba: "+upErr.message);
+approve.disabled=false;
+return;
+}
+
+status("adminStatus","A feltöltés jóváhagyva.");
+await loadPendingTorrents();
+await loadTorrents();
+await loadStats();
 };
-async function loadTorrents(){
- if(!ready())return;let q=db.from("torrents").select("id,title,category,description,file_path,video_path,magnet_link,created_at,uploader_id").eq("approved",true).order("created_at",{ascending:false}).limit(100);
- if(activeCategory)q=q.eq("category",activeCategory);
- const term=$("search").value.trim();if(term)q=q.ilike("title","%"+term.replace(/[%_]/g,"")+"%");
- const {data,error}=await q;const body=$("torrentRows");body.innerHTML="";
- if(error){body.innerHTML='<tr><td colspan="5" class="empty">Betöltési hiba: '+escapeHtml(error.message)+'</td></tr>';return}
- if(!data?.length){body.innerHTML='<tr><td colspan="5" class="empty">Még nincs jóváhagyott torrent ebben a kategóriában.</td></tr>';return}
- data.forEach(t=>{const tr=document.createElement("tr");const name=document.createElement("td");name.innerHTML='<div class="torrent-name">'+escapeHtml(t.title)+'</div><small>'+escapeHtml(t.description||"")+'</small>';
- const cat=document.createElement("td");cat.textContent=t.category;const uploader=document.createElement("td");uploader.textContent=t.uploader_id.slice(0,8);
- const date=document.createElement("td");date.textContent=new Date(t.created_at).toLocaleDateString("hu-HU");
- const dl=document.createElement("td");
- if(t.video_path){
-   const v=document.createElement("button");v.textContent="Film megnyitása";v.onclick=async()=>{
-     const {data,error}=await db.storage.from("video-files").createSignedUrl(t.video_path,300);
-     if(error){alert(error.message);return}
-     window.open(data.signedUrl,"_blank","noopener");
-   };dl.append(v);
- }
- if(t.magnet_link){const a=document.createElement("a");a.className="btn secondary";a.style.marginTop="5px";a.href=t.magnet_link;a.textContent="Magnet";dl.append(a)}
- if(t.file_path){const a=document.createElement("button");a.className="secondary";a.style.marginTop="5px";a.textContent=".torrent";a.onclick=async()=>{
-   const {data,error}=await db.storage.from("torrent-files").createSignedUrl(t.file_path,90);
-   if(error)alert(error.message);else window.location.href=data.signedUrl;
- };dl.append(a)}
- tr.append(name,cat,uploader,date,dl);body.append(tr)});
+
+const reject=document.createElement("button");
+reject.className="secondary";
+reject.style.marginLeft="8px";
+reject.textContent="Elutasítás";
+
+reject.onclick=async()=>{
+if(!confirm("Biztosan elutasítod ezt a feltöltést?"))return;
+
+const {error:delErr}=await db.from("torrents")
+.delete().eq("id",t.id);
+
+if(delErr){
+status("adminStatus","Elutasítási hiba: "+delErr.message);
+return;
 }
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-$("wallForm").onsubmit=async e=>{e.preventDefault();if(!ready())return;if(!currentUser)return status("wallStatus","Üzenetküldéshez jelentkezz be.");const message=$("wallText").value.trim();if(!message)return;const {error}=await db.from("wall_messages").insert({user_id:currentUser.id,message});if(error)return status("wallStatus",error.message);$("wallText").value="";status("wallStatus","Üzenet elküldve.");loadWall();loadStats()};
-async function loadWall(){if(!ready())return;const {data,error}=await db.from("wall_messages").select("message,created_at,user_id").order("created_at",{ascending:false}).limit(30);if(error){$("wallRows").textContent="Az üzenőfal még nincs beállítva.";return}$("wallRows").innerHTML="";(data||[]).forEach(m=>{const d=document.createElement("div");d.className="chatline";const b=document.createElement("b");b.textContent=m.user_id.slice(0,8);const s=document.createElement("span");s.textContent=new Date(m.created_at).toLocaleTimeString("hu-HU");d.append(b,document.createTextNode(m.message+" "),s);$("wallRows").append(d,document.createElement("br"))})}
-async function loadStats(){if(!ready())return;for(const [table,id] of [["torrents","torrentCount"],["wall_messages","wallCount"]]){const {count}=await db.from(table).select("*",{count:"exact",head:true});$(id).textContent=count??"—"}}
-async function init(){if(!ready())return;await refreshSession();await loadTorrents();await loadWall();await loadStats();db.auth.onAuthStateChange(async()=>{await refreshSession()});}
+
+status("adminStatus","A feltöltés elutasítva.");
+await loadPendingTorrents();
+};
+
+item.append(title,desc,meta,document.createElement("br"),approve,reject);
+host.append(item);
+});
+}
+
+$("uploadForm").onsubmit=async e=>{
+e.preventDefault();
+
+if(!ready())return;
+if(!currentUser)return status("uploadStatus","Feltöltéshez előbb jelentkezz be.");
+
+const torrentFile=$("torrentFile").files[0];
+const videoFile=$("videoFile").files[0];
+
+if(!torrentFile&&!videoFile)
+return status("uploadStatus","Válassz ki egy filmfájlt vagy egy .torrent fájlt.");
+
+if(torrentFile&&!torrentFile.name.toLowerCase().endsWith(".torrent"))
+return status("uploadStatus","A torrent mezőbe csak .torrent fájl választható.");
+
+if(torrentFile&&torrentFile.size>10*1024*1024)
+return status("uploadStatus","A .torrent fájl maximum 10 MB lehet.");
+
+if(videoFile){
+const ext=videoFile.name.toLowerCase().split(".").pop();
+if(!["mp4","mkv"].includes(ext))
+return status("uploadStatus","A filmfájl csak MP4 vagy MKV lehet.");
+
+if(videoFile.size>100*1024*1024)
+return status("uploadStatus","A filmfájl maximum 100 MB lehet ebben a verzióban.");
+}
+
+status("uploadStatus","Feltöltés folyamatban...");
+
+let torrentPath=null,videoPath=null;
+
+if(torrentFile){
+torrentPath=currentUser.id+"/"+crypto.randomUUID()+".torrent";
+const up=await db.storage.from("torrent-files").upload(
+torrentPath,torrentFile,
+{contentType:"application/x-bittorrent",upsert:false}
+);
+
+if(up.error)
+return status("uploadStatus","Torrent tárhelyhiba: "+up.error.message);
+}
+
+if(videoFile){
+const ext=videoFile.name.toLowerCase().split(".").pop();
+videoPath=currentUser.id+"/"+crypto.randomUUID()+"."+ext;
+const mime=ext==="mp4"?"video/mp4":"video/x-matroska";
+
+const up=await db.storage.from("video-files").upload(
+videoPath,videoFile,
+{contentType:mime,upsert:false}
+);
+
+if(up.error){
+if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
+return status("uploadStatus","Film tárhelyhiba: "+up.error.message+" – ellenőrizd a video-files tárhelyet és az SQL-beállítást.");
+}
+}
+
+const ins=await db.from("torrents").insert({
+title:$("title").value.trim(),
+category:$("category").value,
+description:$("description").value.trim(),
+file_path:torrentPath,
+video_path:videoPath,
+magnet_link:$("magnet").value.trim()||null,
+uploader_id:currentUser.id,
+approved:false
+});
+
+if(ins.error){
+if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
+if(videoPath)await db.storage.from("video-files").remove([videoPath]);
+return status("uploadStatus","Adatbázishiba: "+ins.error.message);
+}
+
+status("uploadStatus","A feltöltés beérkezett, admin jóváhagyásra vár.");
+$("uploadForm").reset();
+loadTorrents();
+loadStats();
+};
+
+async function loadTorrents(){
+if(!ready())return;
+
+let q=db.from("torrents")
+.select("id,title,category,description,file_path,video_path,magnet_link,created_at,uploader_id")
+.eq("approved",true)
+.order("created_at",{ascending:false})
+.limit(100);
+
+if(activeCategory)q=q.eq("category",activeCategory);
+
+const term=$("search").value.trim();
+if(term)q=q.ilike("title","%"+term.replace(/[%_]/g,"")+"%");
+
+const {data,error}=await q;
+const body=$("torrentRows");
+body.innerHTML="";
+
+if(error){
+body.innerHTML='<tr><td colspan="5" class="empty">Betöltési hiba: '+escapeHtml(error.message)+'</td></tr>';
+return;
+}
+
+if(!data?.length){
+body.innerHTML='<tr><td colspan="5" class="empty">Még nincs jóváhagyott torrent ebben a kategóriában.</td></tr>';
+return;
+}
+
+data.forEach(t=>{
+const tr=document.createElement("tr");
+
+const name=document.createElement("td");
+name.innerHTML='<div class="torrent-name">'+escapeHtml(t.title)+'</div><small>'+escapeHtml(t.description||"")+'</small>';
+
+const cat=document.createElement("td");
+cat.textContent=t.category;
+
+const uploader=document.createElement("td");
+uploader.textContent=t.uploader_id.slice(0,8);
+
+const date=document.createElement("td");
+date.textContent=new Date(t.created_at).toLocaleDateString("hu-HU");
+
+const dl=document.createElement("td");
+
+if(t.video_path){
+const v=document.createElement("button");
+v.textContent="Film megnyitása";
+
+v.onclick=async()=>{
+const {data,error}=await db.storage.from("video-files")
+.createSignedUrl(t.video_path,300);
+
+if(error){alert(error.message);return;}
+window.open(data.signedUrl,"_blank","noopener");
+};
+
+dl.append(v);
+}
+
+if(t.magnet_link){
+const a=document.createElement("a");
+a.className="btn secondary";
+a.style.marginTop="5px";
+a.href=t.magnet_link;
+a.textContent="Magnet";
+dl.append(a);
+}
+
+if(t.file_path){
+const a=document.createElement("button");
+a.className="secondary";
+a.style.marginTop="5px";
+a.textContent=".torrent";
+
+a.onclick=async()=>{
+const {data,error}=await db.storage.from("torrent-files")
+.createSignedUrl(t.file_path,90);
+
+if(error)alert(error.message);
+else window.location.href=data.signedUrl;
+};
+
+dl.append(a);
+}
+
+tr.append(name,cat,uploader,date,dl);
+body.append(tr);
+});
+}
+
+function escapeHtml(s){
+return String(s).replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[c]));
+}
+
+$("wallForm").onsubmit=async e=>{
+e.preventDefault();
+if(!ready())return;
+if(!currentUser)return status("wallStatus","Üzenetküldéshez jelentkezz be.");
+
+const message=$("wallText").value.trim();
+if(!message)return;
+
+const {error}=await db.from("wall_messages")
+.insert({user_id:currentUser.id,message});
+
+if(error)return status("wallStatus",error.message);
+
+$("wallText").value="";
+status("wallStatus","Üzenet elküldve.");
+loadWall();
+loadStats();
+};
+
+async function loadWall(){
+if(!ready())return;
+
+const {data,error}=await db.from("wall_messages")
+.select("message,created_at,user_id")
+.order("created_at",{ascending:false})
+.limit(30);
+
+if(error){
+$("wallRows").textContent="Az üzenőfal még nincs beállítva.";
+return;
+}
+
+$("wallRows").innerHTML="";
+
+(data||[]).forEach(m=>{
+const d=document.createElement("div");
+d.className="chatline";
+
+const b=document.createElement("b");
+b.textContent=m.user_id.slice(0,8);
+
+const s=document.createElement("span");
+s.textContent=new Date(m.created_at).toLocaleTimeString("hu-HU");
+
+d.append(b,document.createTextNode(m.message+" "),s);
+$("wallRows").append(d,document.createElement("br"));
+});
+}
+
+async function loadStats(){
+if(!ready())return;
+
+for(const [table,id] of [
+["torrents","torrentCount"],
+["wall_messages","wallCount"]
+]){
+const {count}=await db.from(table).select("*",{count:"exact",head:true});
+$(id).textContent=count??"—";
+}
+}
+
+async function init(){
+if(!ready())return;
+await refreshSession();
+await loadTorrents();
+await loadWall();
+await loadStats();
+db.auth.onAuthStateChange(async()=>{
+await refreshSession();
+});
+}
+
 init();
 </script>
-</body></html>
-```
+</body>
+</html>
