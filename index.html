@@ -125,13 +125,24 @@ Valódi közösségi torrentkatalógus – saját feltöltésekkel, kereséssel 
 <div class="pb">
 <div class="formgrid">
 <div class="field">
-<label>E-mail cím</label>
+<label>Felhasználónév (regisztrációkor)</label>
+<input id="displayName" type="text" maxlength="30" autocomplete="nickname" placeholder="Milyen néven jelenj meg?">
+</div>
+<div class="field">
+<label>E-mail cím (csak belépéshez)</label>
 <input id="email" type="email" autocomplete="email" placeholder="email@example.com">
 </div>
 <div class="field">
 <label>Jelszó</label>
 <input id="password" type="password" autocomplete="current-password" placeholder="Legalább 8 karakter">
 </div>
+</div>
+<div id="profileEditor" class="hidden" style="margin-top:14px">
+<div class="field">
+<label>Megjelenített név módosítása</label>
+<input id="editDisplayName" type="text" maxlength="30" autocomplete="nickname" placeholder="Új felhasználónév">
+</div>
+<button type="button" class="secondary" id="saveDisplayName" style="margin-top:8px">Név mentése</button>
 </div>
 <div class="row" style="margin-top:10px" id="authButtons">
 <button type="button" id="signupBtn">Regisztráció</button>
@@ -314,9 +325,14 @@ if(!ready())return;
 const {data}=await db.auth.getSession();
 currentUser=data.session?.user||null;
 
+const publicName = currentUser
+? (currentUser.user_metadata?.display_name || "Tag")
+: "";
 $("accountText").textContent=currentUser
-?("Belépve: "+(currentUser.email||"tag"))
+?("Belépve: "+publicName)
 :"Nincs bejelentkezve";
+$("profileEditor").classList.toggle("hidden",!currentUser);
+if(currentUser) $("editDisplayName").value=currentUser.user_metadata?.display_name || "";
 
 $("logoutBtn").classList.toggle("hidden",!currentUser);
 $("signupBtn").classList.toggle("hidden",!!currentUser);
@@ -334,14 +350,21 @@ if(!ready())return;
 
 const email=$("email").value.trim();
 const password=$("password").value;
+const displayName=$("displayName").value.trim();
 
+if(!displayName)return status("authStatus","Adj meg egy felhasználónevet.");
+if(displayName.length<3)return status("authStatus","A felhasználónév legalább 3 karakter legyen.");
 if(!email)return status("authStatus","Írd be az e-mail-címedet.");
 if(password.length<8)return status("authStatus","A jelszó legalább 8 karakter legyen.");
 
 status("authStatus","Regisztráció folyamatban...");
 
 try{
-const {error}=await db.auth.signUp({email,password});
+const {error}=await db.auth.signUp({
+email,
+password,
+options:{data:{display_name:displayName}}
+});
 status("authStatus",error?error.message:"A regisztrációs kérés sikerült. Ha e-mailes megerősítés szükséges, nézd meg a postaládádat.");
 }catch(err){
 status("authStatus","Kapcsolati hiba: "+(err?.message||"ismeretlen hiba"));
@@ -375,6 +398,19 @@ await db.auth.signOut();
 currentUser=null;
 await refreshSession();
 };
+
+$("saveDisplayName").onclick=async()=>{
+if(!currentUser)return status("authStatus","Előbb jelentkezz be.");
+const displayName=$("editDisplayName").value.trim();
+if(displayName.length<3 || displayName.length>30)
+return status("authStatus","A név 3 és 30 karakter közötti legyen.");
+const {data,error}=await db.auth.updateUser({data:{display_name:displayName}});
+if(error)return status("authStatus","A név mentése nem sikerült: "+error.message);
+currentUser=data.user;
+$("accountText").textContent="Belépve: "+displayName;
+status("authStatus","A megjelenített név sikeresen módosult.");
+};
+
 
 $("searchForm").onsubmit=e=>{
 e.preventDefault();
