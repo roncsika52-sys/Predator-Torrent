@@ -65,12 +65,13 @@ footer{text-align:center;color:#777;padding:25px}
    <div class="field"><label>Film / torrent címe</label><input id="title" required maxlength="120"></div>
    <div class="field"><label>Kategória</label><select id="category"><option>Film</option><option>Sorozat</option><option>Dokumentum</option><option>Animáció</option><option>Egyéb</option></select></div>
    <div class="field wide"><label>Leírás</label><textarea id="description" rows="2" maxlength="1200"></textarea></div>
-   <div class="field"><label>.torrent fájl</label><input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent" required></div>
+   <div class="field"><label>Filmfájl (.mp4 vagy .mkv)</label><input id="videoFile" type="file" accept=".mp4,.mkv,video/mp4,video/x-matroska"></div>
+   <div class="field"><label>.torrent fájl (opcionális)</label><input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent"></div>
    <div class="field"><label>Magnet link (ha van)</label><input id="magnet" type="url" placeholder="magnet:?xt=..."></div>
    <div class="field wide"><label><input id="rights" type="checkbox" required style="width:auto"> Kijelentem, hogy jogosult vagyok ezt a tartalmat megosztani.</label></div>
    <div class="wide"><button type="submit">Feltöltés elküldése</button><div class="status" id="uploadStatus"></div></div>
   </form>
-  <p class="muted">A feltöltés .torrent metaadatot tárol. A tényleges P2P letöltéshez a torrentnek működő trackert vagy DHT-t és seedelőket kell tartalmaznia. Ez az oldal önmagában nem üzemeltet torrent trackert.</p>
+  <p class="muted">Filmfájl és .torrent fájl is feltölthető. Legalább egyet válassz. Filmfájl: legfeljebb 100 MB ebben az alapverzióban. Csak olyan videót tölts fel, amelynek megosztására jogosult vagy. A feltöltött film admin jóváhagyás után jelenik meg.</p>
  </div></section>
  <section class="panel" id="torrents"><div class="ph">Torrentek</div><div class="pb" style="padding:0;overflow-x:auto">
   <table><thead><tr><th>Név / leírás</th><th>Kategória</th><th>Feltöltő</th><th>Dátum</th><th>Letöltés</th></tr></thead><tbody id="torrentRows"><tr><td colspan="5" class="empty">Torrentek betöltése...</td></tr></tbody></table>
@@ -163,19 +164,57 @@ $("logoutBtn").onclick=async()=>{await db.auth.signOut();currentUser=null;await 
 $("searchForm").onsubmit=e=>{e.preventDefault();loadTorrents()};
 $("categories").onclick=e=>{const a=e.target.closest("[data-cat]");if(!a)return;e.preventDefault();activeCategory=a.dataset.cat;loadTorrents()};
 $("uploadForm").onsubmit=async e=>{
- e.preventDefault();if(!ready())return;if(!currentUser)return status("uploadStatus","Feltöltéshez előbb jelentkezz be.");
- const file=$("torrentFile").files[0];if(!file||!file.name.toLowerCase().endsWith(".torrent"))return status("uploadStatus","Csak .torrent fájl tölthető fel.");
- if(file.size>10*1024*1024)return status("uploadStatus","A torrentfájl maximum 10 MB lehet.");
+ e.preventDefault();
+ if(!ready())return;
+ if(!currentUser)return status("uploadStatus","Feltöltéshez előbb jelentkezz be.");
+ const torrentFile=$("torrentFile").files[0];
+ const videoFile=$("videoFile").files[0];
+ if(!torrentFile && !videoFile)return status("uploadStatus","Válassz ki egy filmfájlt vagy egy .torrent fájlt.");
+ if(torrentFile && !torrentFile.name.toLowerCase().endsWith(".torrent"))return status("uploadStatus","A torrent mezőbe csak .torrent fájl választható.");
+ if(torrentFile && torrentFile.size>10*1024*1024)return status("uploadStatus","A .torrent fájl maximum 10 MB lehet.");
+ if(videoFile){
+   const ext=videoFile.name.toLowerCase().split(".").pop();
+   if(!["mp4","mkv"].includes(ext))return status("uploadStatus","A filmfájl csak MP4 vagy MKV lehet.");
+   if(videoFile.size>100*1024*1024)return status("uploadStatus","A filmfájl maximum 100 MB lehet ebben a verzióban.");
+ }
  status("uploadStatus","Feltöltés folyamatban...");
- const safeName=crypto.randomUUID()+".torrent",path=currentUser.id+"/"+safeName;
- const up=await db.storage.from("torrent-files").upload(path,file,{contentType:"application/x-bittorrent",upsert:false});
- if(up.error)return status("uploadStatus","Tárhelyhiba: "+up.error.message);
- const ins=await db.from("torrents").insert({title:$("title").value.trim(),category:$("category").value,description:$("description").value.trim(),file_path:path,magnet_link:$("magnet").value.trim()||null,uploader_id:currentUser.id,approved:false});
- if(ins.error){await db.storage.from("torrent-files").remove([path]);return status("uploadStatus","Adatbázishiba: "+ins.error.message);}
- status("uploadStatus","A feltöltés beérkezett, admin jóváhagyásra vár.");$("uploadForm").reset();loadTorrents();loadStats();
+ let torrentPath=null, videoPath=null;
+ if(torrentFile){
+   torrentPath=currentUser.id+"/"+crypto.randomUUID()+".torrent";
+   const up=await db.storage.from("torrent-files").upload(torrentPath,torrentFile,{contentType:"application/x-bittorrent",upsert:false});
+   if(up.error)return status("uploadStatus","Torrent tárhelyhiba: "+up.error.message);
+ }
+ if(videoFile){
+   const ext=videoFile.name.toLowerCase().split(".").pop();
+   videoPath=currentUser.id+"/"+crypto.randomUUID()+"."+ext;
+   const mime=ext==="mp4"?"video/mp4":"video/x-matroska";
+   const up=await db.storage.from("video-files").upload(videoPath,videoFile,{contentType:mime,upsert:false});
+   if(up.error){
+     if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
+     return status("uploadStatus","Film tárhelyhiba: "+up.error.message+" – ellenőrizd, hogy létrehoztad-e a video-files bucketet és lefuttattad-e a migrációs SQL-t.");
+   }
+ }
+ const ins=await db.from("torrents").insert({
+   title:$("title").value.trim(),
+   category:$("category").value,
+   description:$("description").value.trim(),
+   file_path:torrentPath,
+   video_path:videoPath,
+   magnet_link:$("magnet").value.trim()||null,
+   uploader_id:currentUser.id,
+   approved:false
+ });
+ if(ins.error){
+   if(torrentPath)await db.storage.from("torrent-files").remove([torrentPath]);
+   if(videoPath)await db.storage.from("video-files").remove([videoPath]);
+   return status("uploadStatus","Adatbázishiba: "+ins.error.message+" – előbb futtasd le a video-migration SQL-t.");
+ }
+ status("uploadStatus","A feltöltés beérkezett, admin jóváhagyásra vár.");
+ $("uploadForm").reset();
+ loadTorrents();loadStats();
 };
 async function loadTorrents(){
- if(!ready())return;let q=db.from("torrents").select("id,title,category,description,file_path,magnet_link,created_at,uploader_id").eq("approved",true).order("created_at",{ascending:false}).limit(100);
+ if(!ready())return;let q=db.from("torrents").select("id,title,category,description,file_path,video_path,magnet_link,created_at,uploader_id").eq("approved",true).order("created_at",{ascending:false}).limit(100);
  if(activeCategory)q=q.eq("category",activeCategory);
  const term=$("search").value.trim();if(term)q=q.ilike("title","%"+term.replace(/[%_]/g,"")+"%");
  const {data,error}=await q;const body=$("torrentRows");body.innerHTML="";
@@ -184,7 +223,19 @@ async function loadTorrents(){
  data.forEach(t=>{const tr=document.createElement("tr");const name=document.createElement("td");name.innerHTML='<div class="torrent-name">'+escapeHtml(t.title)+'</div><small>'+escapeHtml(t.description||"")+'</small>';
  const cat=document.createElement("td");cat.textContent=t.category;const uploader=document.createElement("td");uploader.textContent=t.uploader_id.slice(0,8);
  const date=document.createElement("td");date.textContent=new Date(t.created_at).toLocaleDateString("hu-HU");
- const dl=document.createElement("td");if(t.magnet_link){const a=document.createElement("a");a.className="btn";a.href=t.magnet_link;a.textContent="Magnet";dl.append(a)}else{const a=document.createElement("button");a.textContent=".torrent";a.onclick=async()=>{const {data,error}=await db.storage.from("torrent-files").createSignedUrl(t.file_path,90);if(error)alert(error.message);else window.location.href=data.signedUrl};dl.append(a)}
+ const dl=document.createElement("td");
+ if(t.video_path){
+   const v=document.createElement("button");v.textContent="Film megnyitása";v.onclick=async()=>{
+     const {data,error}=await db.storage.from("video-files").createSignedUrl(t.video_path,300);
+     if(error){alert(error.message);return}
+     window.open(data.signedUrl,"_blank","noopener");
+   };dl.append(v);
+ }
+ if(t.magnet_link){const a=document.createElement("a");a.className="btn secondary";a.style.marginTop="5px";a.href=t.magnet_link;a.textContent="Magnet";dl.append(a)}
+ if(t.file_path){const a=document.createElement("button");a.className="secondary";a.style.marginTop="5px";a.textContent=".torrent";a.onclick=async()=>{
+   const {data,error}=await db.storage.from("torrent-files").createSignedUrl(t.file_path,90);
+   if(error)alert(error.message);else window.location.href=data.signedUrl;
+ };dl.append(a)}
  tr.append(name,cat,uploader,date,dl);body.append(tr)});
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
