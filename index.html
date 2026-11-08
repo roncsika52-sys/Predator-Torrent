@@ -68,6 +68,11 @@ th,td{padding:8px 5px}
 .account{margin-left:0}
 .logo{font-size:21px}
 }
+
+.category-strip{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;background:#242326;border-bottom:1px solid #e52335;padding:10px 14px}
+.category-strip a{color:#eee;text-decoration:none;padding:8px 13px;border:1px solid #45434a;border-radius:6px;background:#303035;font-weight:600}
+.category-strip a:hover,.category-strip a.active{background:#e52335;border-color:#e52335}
+@media(max-width:700px){.category-strip{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.category-strip a{white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -88,6 +93,14 @@ th,td{padding:8px 5px}
 <a href="#stats">Statisztika</a>
 <a href="#auth">Fiók</a>
 <a href="#adminPanel" id="adminNav" class="hidden">Admin</a>
+</nav>
+<nav class="category-strip" aria-label="Torrent kategóriák">
+  <a href="#torrents" data-top-cat="">Összes</a>
+  <a href="#torrents" data-top-cat="Film">Filmek</a>
+  <a href="#torrents" data-top-cat="Sorozat">Sorozatok</a>
+  <a href="#torrents" data-top-cat="Dokumentum">Dokumentumfilmek</a>
+  <a href="#torrents" data-top-cat="Animáció">Animáció</a>
+  <a href="#torrents" data-top-cat="Egyéb">Egyéb</a>
 </nav>
 
 <div class="layout">
@@ -226,6 +239,19 @@ A feltöltött film admin jóváhagyás után jelenik meg.
 <button type="button" id="recheckAdminBtn" class="secondary">Adminjog ellenőrzése újra</button>
 </div>
 <div class="status" id="adminStatus"></div>
+<div class="panel" style="margin-top:14px;border-color:#5b3438">
+  <div class="ph">Adminjogok kezelése</div>
+  <div class="pb">
+    <p class="muted">Másik tag adminná tételéhez add meg a Supabase felhasználói UUID-ját. Csak megbízható személynek adj adminjogot.</p>
+    <label for="adminTargetUid">Felhasználó UUID</label>
+    <input id="adminTargetUid" placeholder="Például: 123e4567-e89b-12d3-a456-426614174000">
+    <div class="row" style="margin-top:8px">
+      <button type="button" id="grantAdminBtn">Adminjog megadása</button>
+      <button type="button" class="secondary" id="revokeAdminBtn">Adminjog visszavonása</button>
+    </div>
+    <div class="status" id="roleStatus"></div>
+  </div>
+</div>
 <div id="pendingRows" class="muted" style="margin-top:10px">Várakozó feltöltések betöltése...</div>
 </div>
 </section>
@@ -479,6 +505,35 @@ await loadPendingTorrents();
 }
 $("refreshAdminBtn").onclick=()=>loadPendingTorrents();
 $("recheckAdminBtn").onclick=()=>checkAdmin();
+
+async function changeAdminRole(action){
+  if(!currentUser || !db)return;
+  const uid=$("adminTargetUid").value.trim();
+  const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if(!uuidPattern.test(uid)){
+    status("roleStatus","Adj meg érvényes felhasználói UUID-t.");
+    return;
+  }
+  const rpcName=action==="grant"?"grant_site_admin":"revoke_site_admin";
+  const {error}=await db.rpc(rpcName,{target_user:uid});
+  if(error){
+    status("roleStatus","Nem sikerült módosítani: "+error.message+" Ellenőrizd, hogy lefuttattad-e az adminjog-kezelő SQL-t.");
+    return;
+  }
+  status("roleStatus",action==="grant"?"Az adminjog megadása sikerült.":"Az adminjog visszavonása sikerült.");
+}
+$("grantAdminBtn").onclick=()=>changeAdminRole("grant");
+$("revokeAdminBtn").onclick=()=>changeAdminRole("revoke");
+
+document.querySelectorAll("[data-top-cat]").forEach(link=>{
+  link.addEventListener("click",()=>{
+    const cat=link.dataset.topCat||"";
+    document.querySelectorAll("#categories [data-cat]").forEach(a=>{
+      if(a.dataset.cat===cat) a.click();
+    });
+    document.querySelectorAll("[data-top-cat]").forEach(a=>a.classList.toggle("active",a===link));
+  });
+});
 
 async function loadPendingTorrents(){
 const host=$("pendingRows");
