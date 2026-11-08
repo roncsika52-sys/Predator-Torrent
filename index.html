@@ -87,6 +87,7 @@ th,td{padding:8px 5px}
 <a href="#wall">Üzenőfal</a>
 <a href="#stats">Statisztika</a>
 <a href="#auth">Fiók</a>
+<a href="#adminPanel" id="adminNav" class="hidden">Admin</a>
 </nav>
 
 <div class="layout">
@@ -132,10 +133,10 @@ Valódi közösségi torrentkatalógus – saját feltöltésekkel, kereséssel 
 <input id="password" type="password" autocomplete="current-password" placeholder="Legalább 8 karakter">
 </div>
 </div>
-<div class="row" style="margin-top:10px">
-<button id="signupBtn">Regisztráció</button>
-<button class="secondary" id="loginBtn">Belépés</button>
-<button class="secondary hidden" id="logoutBtn">Kilépés</button>
+<div class="row" style="margin-top:10px" id="authButtons">
+<button type="button" id="signupBtn">Regisztráció</button>
+<button type="button" class="secondary" id="loginBtn">Belépés</button>
+<button type="button" class="secondary hidden" id="logoutBtn">Kijelentkezés</button>
 </div>
 <div class="status" id="authStatus"></div>
 <p class="muted">A regisztráció után a Supabase beállításától függően e-mailes megerősítés szükséges lehet.</p>
@@ -209,6 +210,10 @@ A feltöltött film admin jóváhagyás után jelenik meg.
 <div class="ph">Admin felület – feltöltések jóváhagyása</div>
 <div class="pb">
 <div class="muted">Itt jelennek meg a jóváhagyásra váró, jogszerűen megosztható feltöltések.</div>
+<div class="row" style="margin-top:10px">
+<button type="button" id="refreshAdminBtn" class="secondary">Lista frissítése</button>
+<button type="button" id="recheckAdminBtn" class="secondary">Adminjog ellenőrzése újra</button>
+</div>
 <div class="status" id="adminStatus"></div>
 <div id="pendingRows" class="muted" style="margin-top:10px">Várakozó feltöltések betöltése...</div>
 </div>
@@ -311,12 +316,15 @@ currentUser=data.session?.user||null;
 
 $("accountText").textContent=currentUser
 ?("Belépve: "+(currentUser.email||"tag"))
-:"Vendég";
+:"Nincs bejelentkezve";
 
 $("logoutBtn").classList.toggle("hidden",!currentUser);
 $("signupBtn").classList.toggle("hidden",!!currentUser);
 $("loginBtn").classList.toggle("hidden",!!currentUser);
 $("connectionState").textContent="Kapcsolódva";
+status("authStatus",currentUser
+?"Be vagy jelentkezve. A Kijelentkezés gombbal kiléphetsz."
+:"Jelentkezz be, vagy hozz létre új fiókot.");
 
 await checkAdmin();
 }
@@ -383,12 +391,15 @@ loadTorrents();
 
 async function checkAdmin(){
 const panel=$("adminPanel");
+const nav=$("adminNav");
 
 if(!currentUser){
 panel.classList.add("hidden");
+nav.classList.add("hidden");
 return;
 }
 
+status("adminStatus","Admin jogosultság ellenőrzése...");
 const {data,error}=await db.from("site_admins")
 .select("user_id")
 .eq("user_id",currentUser.id)
@@ -396,14 +407,26 @@ const {data,error}=await db.from("site_admins")
 
 if(error){
 panel.classList.add("hidden");
+nav.classList.add("hidden");
+status("authStatus","Bejelentkezve, de az admin jogosultság ellenőrzése nem sikerült: "+error.message);
+console.error("Admin ellenőrzési hiba:",error);
 return;
 }
 
 const isAdmin=!!data;
-panel.classList.toggle("hidden",!isAdmin);
-
-if(isAdmin)await loadPendingTorrents();
+if(!isAdmin){
+status("authStatus","Bejelentkezve. Admin felület nem látható: ez a fiók még nincs benne a site_admins táblában.");
 }
+panel.classList.toggle("hidden",!isAdmin);
+nav.classList.toggle("hidden",!isAdmin);
+
+if(isAdmin){
+status("adminStatus","Admin jogosultság aktív. A jóváhagyásra váró feltöltések lent láthatók.");
+await loadPendingTorrents();
+}
+}
+$("refreshAdminBtn").onclick=()=>loadPendingTorrents();
+$("recheckAdminBtn").onclick=()=>checkAdmin();
 
 async function loadPendingTorrents(){
 const host=$("pendingRows");
@@ -734,8 +757,8 @@ await refreshSession();
 await loadTorrents();
 await loadWall();
 await loadStats();
-db.auth.onAuthStateChange(async()=>{
-await refreshSession();
+db.auth.onAuthStateChange(()=>{
+setTimeout(()=>refreshSession(),0);
 });
 }
 
