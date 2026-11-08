@@ -255,8 +255,24 @@ A feltöltött film admin jóváhagyás után jelenik meg.
 <div class="pb">
 <form id="wallForm" class="row">
 <input id="wallText" maxlength="500" placeholder="Írd be az üzeneted..." required>
-<button>Küldés</button>
+<button type="submit">Küldés</button>
 </form>
+<div class="emoji-tools" style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">
+<button type="button" class="secondary emoji-btn" data-emoji="😀">😀</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😂">😂</button>
+<button type="button" class="secondary emoji-btn" data-emoji="🤣">🤣</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😉">😉</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😍">😍</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😎">😎</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😘">😘</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😭">😭</button>
+<button type="button" class="secondary emoji-btn" data-emoji="😡">😡</button>
+<button type="button" class="secondary emoji-btn" data-emoji="👍">👍</button>
+<button type="button" class="secondary emoji-btn" data-emoji="❤️">❤️</button>
+<button type="button" class="secondary emoji-btn" data-emoji="🔥">🔥</button>
+<button type="button" class="secondary emoji-btn" data-emoji="🎉">🎉</button>
+<button type="button" class="secondary emoji-btn" data-emoji="👋">👋</button>
+</div>
 <div class="status" id="wallStatus"></div>
 <div id="wallRows" class="muted" style="margin-top:10px">Üzenetek betöltése...</div>
 </div>
@@ -734,8 +750,9 @@ if(!currentUser)return status("wallStatus","Üzenetküldéshez jelentkezz be.");
 const message=$("wallText").value.trim();
 if(!message)return;
 
+const displayName=(currentUser.user_metadata?.display_name || "Tag").trim();
 const {error}=await db.from("wall_messages")
-.insert({user_id:currentUser.id,message});
+.insert({user_id:currentUser.id,display_name:displayName,message});
 
 if(error)return status("wallStatus",error.message);
 
@@ -745,11 +762,24 @@ loadWall();
 loadStats();
 };
 
+// Emoji gombok: a kiválasztott jel a kurzor helyére kerül.
+document.querySelectorAll(".emoji-btn").forEach(btn=>{
+btn.addEventListener("click",()=>{
+const input=$("wallText");
+const emoji=btn.dataset.emoji;
+const start=input.selectionStart ?? input.value.length;
+const end=input.selectionEnd ?? input.value.length;
+input.value=input.value.slice(0,start)+emoji+input.value.slice(end);
+input.focus();
+input.setSelectionRange(start+emoji.length,start+emoji.length);
+});
+});
+
 async function loadWall(){
 if(!ready())return;
 
 const {data,error}=await db.from("wall_messages")
-.select("message,created_at,user_id")
+.select("message,created_at,user_id,display_name")
 .order("created_at",{ascending:false})
 .limit(30);
 
@@ -765,7 +795,7 @@ const d=document.createElement("div");
 d.className="chatline";
 
 const b=document.createElement("b");
-b.textContent=m.user_id.slice(0,8);
+b.textContent=m.display_name || "Tag";
 
 const s=document.createElement("span");
 s.textContent=new Date(m.created_at).toLocaleTimeString("hu-HU");
