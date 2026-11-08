@@ -73,7 +73,12 @@ footer{text-align:center;color:#777;padding:25px}
   </form>
   <p class="muted">Filmfájl és .torrent fájl is feltölthető. Legalább egyet válassz. Filmfájl: legfeljebb 100 MB ebben az alapverzióban. Csak olyan videót tölts fel, amelynek megosztására jogosult vagy. A feltöltött film admin jóváhagyás után jelenik meg.</p>
  </div></section>
- <section class="panel" id="torrents"><div class="ph">Torrentek</div><div class="pb" style="padding:0;overflow-x:auto">
+ <section class="panel hidden" id="adminPanel"><div class="ph">Admin felület – feltöltések jóváhagyása</div><div class="pb">
+ <div class="muted">Itt jelennek meg a jóváhagyásra váró, jogszerűen megosztható feltöltések.</div>
+ <div class="status" id="adminStatus"></div>
+ <div id="pendingRows" class="muted" style="margin-top:10px">Várakozó feltöltések betöltése...</div>
+</div></section>
+<section class="panel" id="torrents"><div class="ph">Torrentek</div><div class="pb" style="padding:0;overflow-x:auto">
   <table><thead><tr><th>Név / leírás</th><th>Kategória</th><th>Feltöltő</th><th>Dátum</th><th>Letöltés</th></tr></thead><tbody id="torrentRows"><tr><td colspan="5" class="empty">Torrentek betöltése...</td></tr></tbody></table>
  </div></section>
  <section class="panel" id="wall"><div class="ph">Üzenőfal</div><div class="pb">
@@ -131,6 +136,7 @@ async function refreshSession(){
  $("signupBtn").classList.toggle("hidden",!!currentUser);
  $("loginBtn").classList.toggle("hidden",!!currentUser);
  $("connectionState").textContent="Kapcsolódva";
+ await checkAdmin();
 }
 $("signupBtn").onclick=async()=>{
   if(!ready())return;
@@ -163,6 +169,49 @@ $("loginBtn").onclick=async()=>{
 $("logoutBtn").onclick=async()=>{await db.auth.signOut();currentUser=null;await refreshSession();};
 $("searchForm").onsubmit=e=>{e.preventDefault();loadTorrents()};
 $("categories").onclick=e=>{const a=e.target.closest("[data-cat]");if(!a)return;e.preventDefault();activeCategory=a.dataset.cat;loadTorrents()};
+async function checkAdmin(){
+ const panel=$("adminPanel");
+ if(!currentUser){panel.classList.add("hidden");return}
+ const {data,error}=await db.from("site_admins").select("user_id").eq("user_id",currentUser.id).maybeSingle();
+ if(error){panel.classList.add("hidden");return}
+ const isAdmin=!!data;
+ panel.classList.toggle("hidden",!isAdmin);
+ if(isAdmin)await loadPendingTorrents();
+}
+async function loadPendingTorrents(){
+ const host=$("pendingRows");
+ host.textContent="Várakozó feltöltések betöltése...";
+ const {data,error}=await db.from("torrents")
+   .select("id,title,category,description,created_at,uploader_id,video_path,file_path")
+   .eq("approved",false).order("created_at",{ascending:true}).limit(100);
+ if(error){host.textContent="Admin lista hiba: "+error.message;return}
+ if(!data?.length){host.textContent="Nincs jóváhagyásra váró feltöltés.";return}
+ host.innerHTML="";
+ data.forEach(t=>{
+   const item=document.createElement("div");
+   item.style.cssText="border:1px solid #444;padding:12px;border-radius:8px;margin-top:8px";
+   const title=document.createElement("b");title.textContent=t.title+" ("+t.category+")";
+   const desc=document.createElement("p");desc.textContent=t.description||"Nincs leírás";
+   const meta=document.createElement("small");meta.textContent=(t.video_path?"Videófájl ":"")+(t.file_path?".torrent fájl":"");
+   const approve=document.createElement("button");approve.textContent="Jóváhagyás";
+   approve.onclick=async()=>{
+     approve.disabled=true;
+     const {error:upErr}=await db.from("torrents").update({approved:true}).eq("id",t.id);
+     if(upErr){status("adminStatus","Jóváhagyási hiba: "+upErr.message);approve.disabled=false;return}
+     status("adminStatus","A feltöltés jóváhagyva.");
+     await loadPendingTorrents();await loadTorrents();await loadStats();
+   };
+   const reject=document.createElement("button");reject.className="secondary";reject.style.marginLeft="8px";reject.textContent="Elutasítás";
+   reject.onclick=async()=>{
+     if(!confirm("Biztosan elutasítod ezt a feltöltést?"))return;
+     const {error:delErr}=await db.from("torrents").delete().eq("id",t.id);
+     if(delErr){status("adminStatus","Elutasítási hiba: "+delErr.message);return}
+     status("adminStatus","A feltöltés elutasítva.");await loadPendingTorrents();
+   };
+   item.append(title,desc,meta,document.createElement("br"),approve,reject);
+   host.append(item);
+ });
+}
 $("uploadForm").onsubmit=async e=>{
  e.preventDefault();
  if(!ready())return;
